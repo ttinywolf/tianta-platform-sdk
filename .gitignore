@@ -1,0 +1,32 @@
+# Rust
+rust/target/
+**/target/
+
+# Java
+*.class
+
+# Go
+*.exe
+*.test
+*.out
+
+# C++ build artifacts
+*.o
+*.a
+*.so
+
+# Runtime data (TIANTA on-board platform)
+*.db
+*.db-wal
+*.db-shm
+*.dat
+*.log
+*.log.*
+.env
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp

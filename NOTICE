@@ -1,0 +1,25 @@
+TIANTA Platform SDK
+===================
+Copyright 2026 TIANTA Corp.
+
+This product includes software developed by TIANTA (tianta.com reserved) as the
+on-board platform SDK for satellite software systems.
+
+TIANTA Platform SDK — 星载平台 SDK
+-----------------------------------
+面向卫星星载平台的统一进程间通信(IPC)SDK。基于 SQLite 提供跨语言一致的
+消息队列、互斥锁与滚动日志能力。
+
+This product is licensed under the Apache License, Version 2.0 (see LICENSE).
+
+Third-party notices
+-------------------
+This project depends on the following third-party libraries (as needed by each
+language port; see each language's manifest for exact versions):
+
+- SQLite (public domain) — https://www.sqlite.org
+- rusqlite (MIT) — Rust SQLite bindings
+- modernc.org/sqlite / github.com/mattn/go-sqlite3 — Go SQLite drivers
+- Xerial sqlite-jdbc (Apache-2.0) — Java JDBC SQLite driver
+- serde / serde_json (MIT/Apache-2.0) — Rust serialization
+- slf4j (MIT) — Java logging facade used by sqlite-jdbc
