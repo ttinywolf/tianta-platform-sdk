@@ -1,0 +1,263 @@
+{
+  "schema_version": "1.0",
+  "knowledge_type": "ontology+simulation",
+  "id": "SPACECRAFT-FAULT-006",
+  "title": "太阳翼/供电子系统故障",
+  "domain": [
+    "aerospace",
+    "power",
+    "solar-array"
+  ],
+  "created": "2026-10-14",
+  "provenance": {
+    "source": [
+      "AnySearch retrieval"
+    ],
+    "references": [
+      "NASA CubeSat solar array deployment study",
+      "XTE solar array deployment & drive system (GSFC)",
+      "Flexible multibody deployment (ABAQUS)"
+    ],
+    "confidence": "high"
+  },
+  "ontology": {
+    "namespace": "tianta:aero",
+    "root_class": "SpacecraftComponent",
+    "classes": [
+      {
+        "name": "AttitudeControlSystem",
+        "parent": "SpacecraftComponent",
+        "components": [
+          "ReactionWheel",
+          "MomentumWheel",
+          "StarSensor",
+          "Gyroscope",
+          "FineGuidanceSensor",
+          "Magnetorquer"
+        ]
+      },
+      {
+        "name": "ElectricalPowerSystem",
+        "parent": "SpacecraftComponent",
+        "components": [
+          "SolarArray",
+          "Battery",
+          "PowerController",
+          "Bus"
+        ]
+      },
+      {
+        "name": "ThermalControlSystem",
+        "parent": "SpacecraftComponent",
+        "components": [
+          "Thermistor",
+          "Heater",
+          "Radiator",
+          "OSR"
+        ]
+      },
+      {
+        "name": "TelemetryTrackingCommand",
+        "parent": "SpacecraftComponent",
+        "components": [
+          "Transponder",
+          "Transmitter",
+          "HighGainAntenna",
+          "Antenna"
+        ]
+      },
+      {
+        "name": "Payload",
+        "parent": "SpacecraftComponent",
+        "components": [
+          "Instrument",
+          "ScienceDataLink"
+        ]
+      },
+      {
+        "name": "CommandAndDataHandling",
+        "parent": "SpacecraftComponent",
+        "components": [
+          "OnboardComputer",
+          "CommandProcessor",
+          "FlightSoftware",
+          "Memory"
+        ]
+      },
+      {
+        "name": "Propulsion",
+        "parent": "SpacecraftComponent",
+        "components": [
+          "Thruster",
+          "HallThruster",
+          "PropellantTank",
+          "Valve"
+        ]
+      },
+      {
+        "name": "GuidanceNavigationControl",
+        "parent": "SpacecraftComponent",
+        "components": [
+          "InertialReferenceSystem",
+          "InertialNavigation",
+          "GroundNavigation"
+        ]
+      }
+    ],
+    "instances": [
+      {
+        "id": "INST-SA1",
+        "class": "SolarArray",
+        "role": "power_generation"
+      }
+    ],
+    "properties": [],
+    "relations": [
+      {
+        "type": "causes",
+        "from": "deployment_failure",
+        "to": "power_shortfall"
+      }
+    ]
+  },
+  "fault_models": [
+    {
+      "fault_id": "F-PWR-SOLAR-DEPLOY",
+      "type": [
+        "PowerFailure",
+        "DeploymentFailure"
+      ],
+      "component": "SolarArray",
+      "severity": [
+        "high",
+        "common_cubeSat_failure"
+      ],
+      "symptom": {
+        "telemetry": [
+          "solar_array_power",
+          "deployed_angle"
+        ],
+        "description": "太阳翼未完全展开,发电功率不足(小卫星最常见故障原因)"
+      },
+      "cause": {
+        "internal": [
+          "hinge_failure",
+          "boom_stuck",
+          "damping_issue"
+        ],
+        "environmental": [
+          "launch_vibration",
+          "thermal"
+        ]
+      },
+      "recovery": [
+        "retry_deployment",
+        "manual_swing",
+        "power_management",
+        "reduced_load"
+      ]
+    },
+    {
+      "fault_id": "F-PWR-SOLAR-DEGRADE",
+      "type": "PowerDegradation",
+      "component": "SolarArray",
+      "severity": "medium",
+      "symptom": {
+        "telemetry": [
+          "solar_array_power"
+        ],
+        "description": "辐照损伤/温度致功率缓慢下降"
+      },
+      "cause": {
+        "internal": [
+          "radiation_damage",
+          "thermal"
+        ],
+        "environmental": [
+          "radiation"
+        ]
+      },
+      "recovery": [
+        "power_reallocate",
+        "derating"
+      ]
+    }
+  ],
+  "simulation": {
+    "state_space": {
+      "states": [
+        "stowed",
+        "partial",
+        "deployed",
+        "degraded"
+      ],
+      "transitions": {
+        "stowed": [
+          "partial",
+          "deployed"
+        ],
+        "partial": [
+          "deployed"
+        ],
+        "deployed": [
+          "degraded"
+        ]
+      }
+    },
+    "models": [
+      {
+        "model_id": "MOD-SOLAR",
+        "target": "SolarArray",
+        "kind": "deployment+power",
+        "state": [
+          "deployed_angle",
+          "power_out"
+        ],
+        "input": [
+          "deployment_command"
+        ],
+        "parameters": {
+          "deployment_force_N": 50.0,
+          "cell_efficiency": 0.3
+        },
+        "fault_injection": {
+          "stuck_angle_deg": 10.0,
+          "power_factor": 0.1
+        },
+        "output": [
+          "solar_array_power"
+        ]
+      }
+    ],
+    "sensors": [
+      "solar_array_power",
+      "deployed_angle"
+    ],
+    "time_resolution_ms": 100.0,
+    "duration_s": 3600.0,
+    "scenario_templates": [
+      {
+        "id": "SCN-SOLAR",
+        "fault": "F-PWR-SOLAR-DEPLOY",
+        "inject_at_s": 300,
+        "observables": [
+          "solar_array_power"
+        ]
+      }
+    ]
+  },
+  "rules": [
+    {
+      "rule_id": "R1",
+      "if": "solar_array_power < 20% expected",
+      "then": "declare deployment failure, power manage"
+    }
+  ],
+  "tags": [
+    "太阳翼",
+    "供电",
+    "部署失败",
+    "发电",
+    "小卫星"
+  ]
+}

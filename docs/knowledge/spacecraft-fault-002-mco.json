@@ -1,0 +1,289 @@
+{
+  "schema_version": "1.0",
+  "knowledge_type": "ontology+simulation",
+  "id": "SPACECRAFT-FAULT-002",
+  "title": "真实案例:Mars Climate Orbiter(1999)火星气象轨道器失事",
+  "domain": [
+    "aerospace",
+    "guidance-navigation",
+    "software",
+    "unit-conversion"
+  ],
+  "created": "2026-10-14",
+  "provenance": {
+    "source": [
+      "AnySearch multi-domain retrieval",
+      "NASA MCO Mishap Investigation Board"
+    ],
+    "references": [
+      "Nature 1999 Concern over Mars Lander as inquiry reports on Orbiter loss",
+      "NASA Mars Climate Orbiter Mishap Investigation Board Report",
+      "Wikipedia: Mars Climate Orbiter",
+      "SimScale/EverydayAstronaut metric error analyses"
+    ],
+    "confidence": "high",
+    "mission": {
+      "name": "Mars Climate Orbiter (MCO)",
+      "agency": "NASA",
+      "launch": "1998-12-11",
+      "failure_date": "1999-09-23",
+      "cost_mission_usd": 125000000.0
+    }
+  },
+  "ontology": {
+    "namespace": "tianta:aero",
+    "root_class": "SpacecraftComponent",
+    "classes": [
+      {
+        "name": "AttitudeControlSystem",
+        "parent": "SpacecraftComponent",
+        "components": [
+          "ReactionWheel",
+          "MomentumWheel",
+          "StarSensor",
+          "Gyroscope",
+          "FineGuidanceSensor",
+          "Magnetorquer"
+        ]
+      },
+      {
+        "name": "ElectricalPowerSystem",
+        "parent": "SpacecraftComponent",
+        "components": [
+          "SolarArray",
+          "Battery",
+          "PowerController",
+          "Bus"
+        ]
+      },
+      {
+        "name": "GuidanceNavigationControl",
+        "parent": "SpacecraftComponent",
+        "components": [
+          "InertialNavigation",
+          "ThrusterFiringModel",
+          "GroundNavigation",
+          "FlightSoftware"
+        ]
+      },
+      {
+        "name": "TelemetryTrackingCommand",
+        "parent": "SpacecraftComponent",
+        "components": [
+          "HighGainAntenna",
+          "LowGainAntenna",
+          "Transmitter",
+          "Link"
+        ]
+      },
+      {
+        "name": "OpticalSystem",
+        "parent": "SpacecraftComponent",
+        "components": [
+          "PrimaryMirror",
+          "PointSpreadFunction",
+          "Detector"
+        ]
+      },
+      {
+        "name": "CommandAndDataHandling",
+        "parent": "SpacecraftComponent",
+        "components": [
+          "OnboardComputer",
+          "CommandProcessor"
+        ]
+      },
+      {
+        "name": "Propulsion",
+        "parent": "SpacecraftComponent",
+        "components": [
+          "Thruster",
+          "PropellantTank"
+        ]
+      }
+    ],
+    "instances": [
+      {
+        "id": "INST-MCO-NAV",
+        "class": "GuidanceNavigationControl",
+        "role": "ground_navigation_model"
+      },
+      {
+        "id": "INST-MCO-FSW",
+        "class": "FlightSoftware",
+        "role": "attitude_control"
+      },
+      {
+        "id": "INST-MCO-THRUST",
+        "class": "Thruster",
+        "role": "trajectory_correction"
+      }
+    ],
+    "properties": [
+      {
+        "name": "trajectory_altitude",
+        "domain": "GuidanceNavigationControl",
+        "range": "km",
+        "observable": true
+      },
+      {
+        "name": "angular_velocity",
+        "domain": "AttitudeControlSystem",
+        "range": "deg/s",
+        "observable": true
+      },
+      {
+        "name": "thruster_impulse",
+        "domain": "Propulsion",
+        "range": "Ns",
+        "observable": true
+      },
+      {
+        "name": "bearing_torque",
+        "domain": "FineGuidanceSensor",
+        "range": "Nm",
+        "observable": true
+      },
+      {
+        "name": "antenna_deployed_angle",
+        "domain": "HighGainAntenna",
+        "range": "deg",
+        "observable": true
+      },
+      {
+        "name": "psf_concentration",
+        "domain": "OpticalSystem",
+        "range": "ratio",
+        "observable": true
+      }
+    ],
+    "relations": [
+      {
+        "type": "causes",
+        "from": "unit_mismatch_si_vs_customary",
+        "to": "trajectory_altitude_error"
+      },
+      {
+        "type": "causes",
+        "from": "trajectory_altitude_error",
+        "to": "atmospheric_breakup"
+      },
+      {
+        "type": "mitigated_by",
+        "fault": "unit_mismatch",
+        "action": "unified_units_ground_system"
+      }
+    ]
+  },
+  "fault_models": [
+    {
+      "fault_id": "F-MCO-NAV-UNIT",
+      "type": [
+        "SoftwareFailure",
+        "GroundNavigationError",
+        "UnitConversionError"
+      ],
+      "component": "GuidanceNavigationControl",
+      "severity": "catastrophic(mission_lost)",
+      "symptom": {
+        "telemetry": [
+          "trajectory_altitude"
+        ],
+        "description": "轨道器进入火星轨道的近心点过低(约57km,低于预期),最终坠入火星大气解体,遥测丢失"
+      },
+      "cause": {
+        "internal": [
+          "si_metric_and_us_customary_unit_mismatch",
+          "unvalidated_ground_model_input",
+          "software_requirements_defect"
+        ],
+        "environmental": []
+      },
+      "recovery": [
+        "unify_units_in_ground_nav",
+        "force_unit_validation",
+        "regression_test_nav_models",
+        "independent_review_board"
+      ],
+      "mechanism": "地面站计算机模型使用英制(lbf-s)推力冲量数据,而飞行软件按公制(Ns)解释,误算轨道器位置冲量,未被人为捕获。"
+    }
+  ],
+  "simulation": {
+    "state_space": {
+      "states": [
+        "nominal",
+        "trajectory-offset",
+        "atmospheric-entry"
+      ],
+      "transitions": {
+        "nominal": [
+          "trajectory-offset"
+        ],
+        "trajectory-offset": [
+          "atmospheric-entry"
+        ]
+      }
+    },
+    "models": [
+      {
+        "model_id": "MOD-MCO-TRAJ",
+        "target": "GuidanceNavigationControl",
+        "kind": "orbital_propagator",
+        "state": [
+          "altitude",
+          "velocity"
+        ],
+        "input": [
+          "thruster_impulse"
+        ],
+        "parameters": {
+          "thruster_impulse_units": "libf-s_incorrect",
+          "scale_factor_error": 4.45
+        },
+        "fault_injection": {
+          "unit_scale_error_factor": 4.45,
+          "periapsis_error_km": -90.0
+        },
+        "output": [
+          "trajectory_altitude"
+        ]
+      }
+    ],
+    "sensors": [
+      "trajectory_altitude",
+      "velocity"
+    ],
+    "time_resolution_ms": 1000.0,
+    "duration_s": 3600.0,
+    "scenario_templates": [
+      {
+        "id": "SCN-MCO-UNIT",
+        "fault": "F-MCO-NAV-UNIT",
+        "inject_at_s": 600,
+        "observables": [
+          "trajectory_altitude"
+        ]
+      }
+    ]
+  },
+  "rules": [
+    {
+      "rule_id": "R1",
+      "if": "trajectory_altitude < 80km",
+      "then": "alert atmospheric entry, trajectory error"
+    },
+    {
+      "rule_id": "R2",
+      "if": "nav_model_units != FSW_units",
+      "then": "halt maneuver, force unit audit"
+    }
+  ],
+  "tags": [
+    "真实案例",
+    "Mars Climate Orbiter",
+    "单位换算",
+    "导航软件",
+    "软件缺陷",
+    "1999"
+  ]
+}

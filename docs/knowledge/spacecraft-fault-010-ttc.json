@@ -1,0 +1,231 @@
+{
+  "schema_version": "1.0",
+  "knowledge_type": "ontology+simulation",
+  "id": "SPACECRAFT-FAULT-010",
+  "title": "测控/通信链路故障(通用)",
+  "domain": [
+    "aerospace",
+    "ttc",
+    "communication"
+  ],
+  "created": "2026-10-14",
+  "provenance": {
+    "source": [
+      "AnySearch retrieval"
+    ],
+    "references": [
+      "TT&C tutorial (IEEE COMST 2023)",
+      "SATCOM recovery strategies (Waldon)",
+      "Satellite communication review"
+    ],
+    "confidence": "high"
+  },
+  "ontology": {
+    "namespace": "tianta:aero",
+    "root_class": "SpacecraftComponent",
+    "classes": [
+      {
+        "name": "AttitudeControlSystem",
+        "parent": "SpacecraftComponent",
+        "components": [
+          "ReactionWheel",
+          "MomentumWheel",
+          "StarSensor",
+          "Gyroscope",
+          "Magnetorquer"
+        ]
+      },
+      {
+        "name": "ElectricalPowerSystem",
+        "parent": "SpacecraftComponent",
+        "components": [
+          "SolarArray",
+          "Battery",
+          "PowerController"
+        ]
+      },
+      {
+        "name": "ThermalControlSystem",
+        "parent": "SpacecraftComponent",
+        "components": [
+          "Thermistor",
+          "Heater"
+        ]
+      },
+      {
+        "name": "TelemetryTrackingCommand",
+        "parent": "SpacecraftComponent",
+        "components": [
+          "Transponder",
+          "Transmitter",
+          "Antenna",
+          "Link"
+        ]
+      },
+      {
+        "name": "Payload",
+        "parent": "SpacecraftComponent",
+        "components": [
+          "Instrument"
+        ]
+      },
+      {
+        "name": "CommandAndDataHandling",
+        "parent": "SpacecraftComponent",
+        "components": [
+          "OnboardComputer",
+          "CommandProcessor",
+          "FlightSoftware",
+          "Clock"
+        ]
+      },
+      {
+        "name": "GuidanceNavigationControl",
+        "parent": "SpacecraftComponent",
+        "components": [
+          "InertialReferenceSystem"
+        ]
+      }
+    ],
+    "instances": [],
+    "properties": [],
+    "relations": [
+      {
+        "type": "causes",
+        "from": "transponder_failure",
+        "to": "link_loss"
+      },
+      {
+        "type": "causes",
+        "from": "antenna_mispoint",
+        "to": "signal_loss"
+      }
+    ]
+  },
+  "fault_models": [
+    {
+      "fault_id": "F-TTC-TRANSPONDER",
+      "type": "CommunicationFailure",
+      "component": "Transponder",
+      "severity": "high",
+      "symptom": {
+        "telemetry": [
+          "link_signal",
+          "bit_error"
+        ],
+        "description": "转发器失效/降级,链路中断,通信品质下降"
+      },
+      "cause": {
+        "internal": [
+          "power_amplifier_failure",
+          "upconverter_drift",
+          "aging"
+        ],
+        "environmental": [
+          "radiation"
+        ]
+      },
+      "recovery": [
+        "redundant_transponder_switch",
+        "power_managed_operation",
+        "spare_transponder_use"
+      ]
+    },
+    {
+      "fault_id": "F-TTC-ANTENNA",
+      "type": "CommunicationFailure",
+      "component": "Antenna",
+      "severity": "high",
+      "symptom": {
+        "telemetry": [
+          "link_signal",
+          "pointing"
+        ],
+        "description": "天线对地指向偏差/指向机构故障,信号衰减"
+      },
+      "cause": {
+        "internal": [
+          "gimbal_failure",
+          "deployment_issue"
+        ],
+        "environmental": []
+      },
+      "recovery": [
+        "repoint_command",
+        "fallback_low_gain"
+      ]
+    }
+  ],
+  "simulation": {
+    "state_space": {
+      "states": [
+        "nominal",
+        "degraded",
+        "lost"
+      ],
+      "transitions": {
+        "nominal": [
+          "degraded"
+        ],
+        "degraded": [
+          "lost"
+        ]
+      }
+    },
+    "models": [
+      {
+        "model_id": "MOD-TTC",
+        "target": "Transponder",
+        "kind": "link_budget",
+        "state": [
+          "link_signal"
+        ],
+        "input": [
+          "power"
+        ],
+        "parameters": {
+          "tx_power_W": 50.0,
+          "antenna_gain_dbi": 30
+        },
+        "fault_injection": {
+          "power_factor": 0.1,
+          "noise_temp_K": 1000
+        },
+        "output": [
+          "link_signal"
+        ]
+      }
+    ],
+    "sensors": [
+      "link_signal",
+      "bit_error"
+    ],
+    "time_resolution_ms": 100.0,
+    "duration_s": 3600.0,
+    "scenario_templates": [
+      {
+        "id": "SCN-TTC",
+        "fault": "F-TTC-TRANSPONDER",
+        "inject_at_s": 600,
+        "observables": [
+          "link_signal"
+        ]
+      }
+    ]
+  },
+  "rules": [
+    {
+      "rule_id": "R1",
+      "if": "link_signal < -160dBm",
+      "then": "switch redundant transponder"
+    }
+  ],
+  "tags": [
+    "测控",
+    "通信",
+    "转发器",
+    "天线",
+    "链路",
+    "TT&C"
+  ]
+}

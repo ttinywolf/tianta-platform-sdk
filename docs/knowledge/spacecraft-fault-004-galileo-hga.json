@@ -1,0 +1,278 @@
+{
+  "schema_version": "1.0",
+  "knowledge_type": "ontology+simulation",
+  "id": "SPACECRAFT-FAULT-004",
+  "title": "真实案例:Galileo 高增益天线(HGA)部署失败",
+  "domain": [
+    "aerospace",
+    "deployable-structure",
+    "antenna",
+    "mechanism"
+  ],
+  "created": "2026-10-14",
+  "provenance": {
+    "source": [
+      "AnySearch multi-domain retrieval",
+      "NASA NTRS Galileo HGA anomaly report"
+    ],
+    "references": [
+      "NASA NTRS: The Galileo high gain antenna deployment anomaly (1994)",
+      "Galileo mission operations records"
+    ],
+    "confidence": "high",
+    "mission": {
+      "name": "Galileo",
+      "agency": "NASA",
+      "launch": "1989-10-18",
+      "failure_date": "1991-04-11"
+    }
+  },
+  "ontology": {
+    "namespace": "tianta:aero",
+    "root_class": "SpacecraftComponent",
+    "classes": [
+      {
+        "name": "AttitudeControlSystem",
+        "parent": "SpacecraftComponent",
+        "components": [
+          "ReactionWheel",
+          "MomentumWheel",
+          "StarSensor",
+          "Gyroscope",
+          "FineGuidanceSensor",
+          "Magnetorquer"
+        ]
+      },
+      {
+        "name": "ElectricalPowerSystem",
+        "parent": "SpacecraftComponent",
+        "components": [
+          "SolarArray",
+          "Battery",
+          "PowerController",
+          "Bus"
+        ]
+      },
+      {
+        "name": "GuidanceNavigationControl",
+        "parent": "SpacecraftComponent",
+        "components": [
+          "InertialNavigation",
+          "ThrusterFiringModel",
+          "GroundNavigation",
+          "FlightSoftware"
+        ]
+      },
+      {
+        "name": "TelemetryTrackingCommand",
+        "parent": "SpacecraftComponent",
+        "components": [
+          "HighGainAntenna",
+          "LowGainAntenna",
+          "Transmitter",
+          "Link"
+        ]
+      },
+      {
+        "name": "OpticalSystem",
+        "parent": "SpacecraftComponent",
+        "components": [
+          "PrimaryMirror",
+          "PointSpreadFunction",
+          "Detector"
+        ]
+      },
+      {
+        "name": "CommandAndDataHandling",
+        "parent": "SpacecraftComponent",
+        "components": [
+          "OnboardComputer",
+          "CommandProcessor"
+        ]
+      },
+      {
+        "name": "Propulsion",
+        "parent": "SpacecraftComponent",
+        "components": [
+          "Thruster",
+          "PropellantTank"
+        ]
+      }
+    ],
+    "instances": [
+      {
+        "id": "INST-GAL-HGA",
+        "class": "HighGainAntenna",
+        "role": "high_rate_downlink"
+      },
+      {
+        "id": "INST-GAL-LGA",
+        "class": "LowGainAntenna",
+        "role": "low_rate_fallback"
+      }
+    ],
+    "properties": [
+      {
+        "name": "trajectory_altitude",
+        "domain": "GuidanceNavigationControl",
+        "range": "km",
+        "observable": true
+      },
+      {
+        "name": "angular_velocity",
+        "domain": "AttitudeControlSystem",
+        "range": "deg/s",
+        "observable": true
+      },
+      {
+        "name": "thruster_impulse",
+        "domain": "Propulsion",
+        "range": "Ns",
+        "observable": true
+      },
+      {
+        "name": "bearing_torque",
+        "domain": "FineGuidanceSensor",
+        "range": "Nm",
+        "observable": true
+      },
+      {
+        "name": "antenna_deployed_angle",
+        "domain": "HighGainAntenna",
+        "range": "deg",
+        "observable": true
+      },
+      {
+        "name": "psf_concentration",
+        "domain": "OpticalSystem",
+        "range": "ratio",
+        "observable": true
+      }
+    ],
+    "relations": [
+      {
+        "type": "causes",
+        "from": "ribs_stuck_after_restraint_release",
+        "to": "antenna_not_fully_deployed"
+      },
+      {
+        "type": "mitigated_by",
+        "fault": "deployment_failure",
+        "action": "use_low_gain_antenna"
+      }
+    ]
+  },
+  "fault_models": [
+    {
+      "fault_id": "F-GAL-HGA-DEPLOY",
+      "type": [
+        "DeployableMechanismFailure",
+        "AntennaDeploymentAnomaly"
+      ],
+      "component": "HighGainAntenna",
+      "severity": "high(data_rate degraded)",
+      "symptom": {
+        "telemetry": [
+          "antenna_deployed_angle"
+        ],
+        "description": "1991-04-11部署序列执行后,伞形高增益天线未能达到完全展开位置,遥测显示部分展开"
+      },
+      "cause": {
+        "internal": [
+          "ribs_stuck_after_restraint_release",
+          "insufficient_deployment_force",
+          "binding_members_overlap"
+        ],
+        "environmental": [
+          "launch_vibration",
+          "thermal",
+          "outgassing_stiction"
+        ]
+      },
+      "recovery": [
+        "repeated_deployment_attempts",
+        "ground_investigation_tests",
+        "use_low_gain_antenna",
+        "data_compression_to_compensate_low_rate"
+      ],
+      "mechanism": "释放约束后,天线肋片卡住未能完全展开,地面分析与试验确定可能失效机理,并制定恢复策略,改用低增益天线+数据压缩维持任务。"
+    }
+  ],
+  "simulation": {
+    "state_space": {
+      "states": [
+        "stowed",
+        "partially-deployed",
+        "fully-deployed"
+      ],
+      "transitions": {
+        "stowed": [
+          "partially-deployed"
+        ],
+        "partially-deployed": [
+          "fully-deployed"
+        ]
+      }
+    },
+    "models": [
+      {
+        "model_id": "MOD-GAL-HGA",
+        "target": "HighGainAntenna",
+        "kind": "deployment_kinetics",
+        "state": [
+          "antenna_deployed_angle"
+        ],
+        "input": [
+          "deployment_command"
+        ],
+        "parameters": {
+          "deployment_force_N": 100.0,
+          "stiction_N": 150.0
+        },
+        "fault_injection": {
+          "binding_force_factor": 1.5,
+          "stuck_angle_deg": 15.0
+        },
+        "output": [
+          "antenna_deployed_angle"
+        ]
+      }
+    ],
+    "sensors": [
+      "antenna_deployed_angle"
+    ],
+    "time_resolution_ms": 100.0,
+    "duration_s": 1200.0,
+    "scenario_templates": [
+      {
+        "id": "SCN-GAL-HGA",
+        "fault": "F-GAL-HGA-DEPLOY",
+        "inject_at_s": 300,
+        "observables": [
+          "antenna_deployed_angle"
+        ]
+      }
+    ]
+  },
+  "rules": [
+    {
+      "rule_id": "R1",
+      "if": "antenna_deployed_angle < 100deg after 600s",
+      "then": "declare deployment failure, switch to LGA"
+    },
+    {
+      "rule_id": "R2",
+      "if": "stiction > deployment_force",
+      "then": "no retry, use fallback link"
+    }
+  ],
+  "tags": [
+    "真实案例",
+    "Galileo",
+    "高增益天线",
+    "可展开机构",
+    "部署失败",
+    "低增益天线",
+    "1991"
+  ]
+}

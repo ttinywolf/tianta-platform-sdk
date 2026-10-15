@@ -1,0 +1,208 @@
+{
+  "schema_version": "1.0",
+  "knowledge_type": "ontology+simulation",
+  "id": "SPACECRAFT-FAULT-012",
+  "title": "真实案例:GEO通信卫星业务故障(转发器/轨道保持)",
+  "domain": [
+    "aerospace",
+    "geostationary",
+    "communication-satellite",
+    "business-continuity"
+  ],
+  "created": "2026-10-14",
+  "provenance": {
+    "source": [
+      "AnySearch retrieval"
+    ],
+    "references": [
+      "Impact 1859 superstorm on GEO transponders",
+      "Strategies to recover from SATCOM failures",
+      "Express satellites station-keeping"
+    ],
+    "confidence": "medium"
+  },
+  "ontology": {
+    "namespace": "tianta:aero",
+    "root_class": "SpacecraftComponent",
+    "classes": [
+      {
+        "name": "AttitudeControlSystem",
+        "parent": "SpacecraftComponent",
+        "components": [
+          "ReactionWheel",
+          "MomentumWheel",
+          "StarSensor",
+          "Gyroscope",
+          "Magnetorquer"
+        ]
+      },
+      {
+        "name": "ElectricalPowerSystem",
+        "parent": "SpacecraftComponent",
+        "components": [
+          "SolarArray",
+          "Battery",
+          "PowerController"
+        ]
+      },
+      {
+        "name": "ThermalControlSystem",
+        "parent": "SpacecraftComponent",
+        "components": [
+          "Thermistor",
+          "Heater"
+        ]
+      },
+      {
+        "name": "TelemetryTrackingCommand",
+        "parent": "SpacecraftComponent",
+        "components": [
+          "Transponder",
+          "Transmitter",
+          "Antenna",
+          "Link"
+        ]
+      },
+      {
+        "name": "Payload",
+        "parent": "SpacecraftComponent",
+        "components": [
+          "Instrument"
+        ]
+      },
+      {
+        "name": "CommandAndDataHandling",
+        "parent": "SpacecraftComponent",
+        "components": [
+          "OnboardComputer",
+          "CommandProcessor",
+          "FlightSoftware",
+          "Clock"
+        ]
+      },
+      {
+        "name": "GuidanceNavigationControl",
+        "parent": "SpacecraftComponent",
+        "components": [
+          "InertialReferenceSystem"
+        ]
+      }
+    ],
+    "instances": [],
+    "properties": [],
+    "relations": [
+      {
+        "type": "causes",
+        "from": "transponder_damage",
+        "to": "revenue_loss_broadcast_outage"
+      }
+    ]
+  },
+  "fault_models": [
+    {
+      "fault_id": "F-GEO-TRANSP-NET",
+      "type": [
+        "CommunicationFailure",
+        "BusinessOutage"
+      ],
+      "component": "Transponder",
+      "severity": [
+        "high",
+        "economic"
+      ],
+      "symptom": {
+        "telemetry": [
+          "transponder_channels",
+          "c_ku_band_signal"
+        ],
+        "description": "GEO转发器通道失效/损坏,广播通信中断,业务收入损失"
+      },
+      "cause": {
+        "environmental": [
+          "space_weather",
+          "superstorm_charging",
+          "energetic_electrons"
+        ],
+        "internal": [
+          "aging",
+          "tt_degrades"
+        ]
+      },
+      "recovery": [
+        "spare_transponder_margin",
+        "redundancy",
+        "traffic_reto_route",
+        "fleet_redundancy"
+      ]
+    }
+  ],
+  "simulation": {
+    "state_space": {
+      "states": [
+        "operational",
+        "degraded",
+        "disabled"
+      ],
+      "transitions": {
+        "operational": [
+          "degraded"
+        ],
+        "degraded": [
+          "disabled"
+        ]
+      }
+    },
+    "models": [
+      {
+        "model_id": "MOD-GEO",
+        "target": "Transponder",
+        "kind": "fleet_reliability",
+        "state": [
+          "active_transponders"
+        ],
+        "input": [
+          "age_years"
+        ],
+        "parameters": {
+          "fleet_size": 300.0,
+          "spare_ratio": 0.3
+        },
+        "fault_injection": {
+          "disable_frac": 0.2
+        },
+        "output": [
+          "transponder_channels"
+        ]
+      }
+    ],
+    "sensors": [
+      "transponder_channels"
+    ],
+    "time_resolution_ms": 1000.0,
+    "duration_s": 31536000.0,
+    "scenario_templates": [
+      {
+        "id": "SCN-GEO",
+        "fault": "F-GEO-TRANSP-NET",
+        "inject_at_s": 86400,
+        "observables": [
+          "transponder_channels"
+        ]
+      }
+    ]
+  },
+  "rules": [
+    {
+      "rule_id": "R1",
+      "if": "active_transponders < 70%",
+      "then": "raise fleet redundancy concern"
+    }
+  ],
+  "tags": [
+    "GEO",
+    "通信卫星",
+    "转发器",
+    "业务中断",
+    "在轨服务"
+  ]
+}

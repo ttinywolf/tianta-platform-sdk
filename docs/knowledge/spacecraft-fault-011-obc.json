@@ -1,0 +1,227 @@
+{
+  "schema_version": "1.0",
+  "knowledge_type": "ontology+simulation",
+  "id": "SPACECRAFT-FAULT-011",
+  "title": "星载计算机/数据处理故障",
+  "domain": [
+    "aerospace",
+    "obc",
+    "software",
+    "computer"
+  ],
+  "created": "2026-10-14",
+  "provenance": {
+    "source": [
+      "AnySearch retrieval"
+    ],
+    "references": [
+      "Requirements-related software failures (including Therac-25/Ariane leaks)",
+      "Fault-tolerant real-time computer system (NASA Tech Briefs)",
+      "MSC robustness recovery"
+    ],
+    "confidence": "high"
+  },
+  "ontology": {
+    "namespace": "tianta:aero",
+    "root_class": "SpacecraftComponent",
+    "classes": [
+      {
+        "name": "AttitudeControlSystem",
+        "parent": "SpacecraftComponent",
+        "components": [
+          "ReactionWheel",
+          "MomentumWheel",
+          "StarSensor",
+          "Gyroscope",
+          "Magnetorquer"
+        ]
+      },
+      {
+        "name": "ElectricalPowerSystem",
+        "parent": "SpacecraftComponent",
+        "components": [
+          "SolarArray",
+          "Battery",
+          "PowerController"
+        ]
+      },
+      {
+        "name": "ThermalControlSystem",
+        "parent": "SpacecraftComponent",
+        "components": [
+          "Thermistor",
+          "Heater"
+        ]
+      },
+      {
+        "name": "TelemetryTrackingCommand",
+        "parent": "SpacecraftComponent",
+        "components": [
+          "Transponder",
+          "Transmitter",
+          "Antenna",
+          "Link"
+        ]
+      },
+      {
+        "name": "Payload",
+        "parent": "SpacecraftComponent",
+        "components": [
+          "Instrument"
+        ]
+      },
+      {
+        "name": "CommandAndDataHandling",
+        "parent": "SpacecraftComponent",
+        "components": [
+          "OnboardComputer",
+          "CommandProcessor",
+          "FlightSoftware",
+          "Clock"
+        ]
+      },
+      {
+        "name": "GuidanceNavigationControl",
+        "parent": "SpacecraftComponent",
+        "components": [
+          "InertialReferenceSystem"
+        ]
+      }
+    ],
+    "instances": [],
+    "properties": [],
+    "relations": [
+      {
+        "type": "causes",
+        "from": "software_execption",
+        "to": "obc_reboot"
+      }
+    ]
+  },
+  "fault_models": [
+    {
+      "fault_id": "F-OBC-LOCKUP",
+      "type": "OnboardComputerFailure",
+      "component": "OnboardComputer",
+      "severity": "high",
+      "symptom": {
+        "telemetry": [
+          "reboot_count",
+          "cpu_health"
+        ],
+        "description": "星载计算机死锁/复位,指令处理中断,需看门狗重启"
+      },
+      "cause": {
+        "internal": [
+          "software_exception",
+          "memory_corruption",
+          "unexpected_input"
+        ],
+        "environmental": [
+          "SEU",
+          "single_event_latchup"
+        ]
+      },
+      "recovery": [
+        "watchdog_reboot",
+        "redundant_computer_switch",
+        "software_patch_reload",
+        "memory_scrub"
+      ]
+    },
+    {
+      "fault_id": "F-OBC-CLOCK",
+      "type": "TimingFault",
+      "component": "CommandAndDataHandling",
+      "severity": "medium",
+      "symptom": {
+        "telemetry": [
+          "time_sync"
+        ],
+        "description": "时钟漂移/失步,任务调度错乱"
+      },
+      "cause": {
+        "internal": [
+          "oscillator_drift",
+          "clock_fault"
+        ],
+        "environmental": []
+      },
+      "recovery": [
+        "resync",
+        "redundant_oscillator"
+      ]
+    }
+  ],
+  "simulation": {
+    "state_space": {
+      "states": [
+        "running",
+        "suspended",
+        "reboot"
+      ],
+      "transitions": {
+        "running": [
+          "suspended"
+        ],
+        "suspended": [
+          "reboot"
+        ]
+      }
+    },
+    "models": [
+      {
+        "model_id": "MOD-OBC",
+        "target": "OnboardComputer",
+        "kind": "stm",
+        "state": [
+          "cpu_state"
+        ],
+        "input": [
+          "commands"
+        ],
+        "parameters": {
+          "reboot_threshold": 3,
+          "uptime_s": 0
+        },
+        "fault_injection": {
+          "exception_rate": 0.01
+        },
+        "output": [
+          "reboot_count"
+        ]
+      }
+    ],
+    "sensors": [
+      "reboot_count",
+      "cpu_health"
+    ],
+    "time_resolution_ms": 100.0,
+    "duration_s": 86400.0,
+    "scenario_templates": [
+      {
+        "id": "SCN-OBC",
+        "fault": "F-OBC-LOCKUP",
+        "inject_at_s": 1000,
+        "observables": [
+          "reboot_count"
+        ]
+      }
+    ]
+  },
+  "rules": [
+    {
+      "rule_id": "R1",
+      "if": "reboot_count > 3/min",
+      "then": "switch redundant computer"
+    }
+  ],
+  "tags": [
+    "星载计算机",
+    "OBC",
+    "软件",
+    "死锁",
+    "看门狗",
+    "复位"
+  ]
+}

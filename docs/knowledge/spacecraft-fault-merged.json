@@ -1,0 +1,4349 @@
+{
+  "schema_version": "2.0",
+  "knowledge_type": "spacecraft-fault-knowledge-base",
+  "id": "TIANTA-ORBIT-KB-001",
+  "title": "航天器故障知识库(本体+仿真合并,扩充版)",
+  "domain": [
+    "aerospace",
+    "on-orbit",
+    "reliability",
+    "avionics",
+    "fault-diagnosis",
+    "simulation",
+    "space-environment",
+    "communication"
+  ],
+  "created": "2026-10-14",
+  "revision": "2.0",
+  "index": {
+    "SPACECRAFT-FAULT-001": {
+      "title": "航天器在轨故障本体与仿真知识条目"
+    },
+    "SPACECRAFT-FAULT-002": {
+      "title": "真实案例:Mars Climate Orbiter(1999)火星气象轨道器失事"
+    },
+    "SPACECRAFT-FAULT-003": {
+      "title": "真实案例:Hubble Space Telescope 细导星敏感器(FGS)轴承异常"
+    },
+    "SPACECRAFT-FAULT-004": {
+      "title": "真实案例:Galileo 高增益天线(HGA)部署失败"
+    },
+    "SPACECRAFT-FAULT-005": {
+      "title": "推进子系统故障(通用 + 电推进)"
+    },
+    "SPACECRAFT-FAULT-006": {
+      "title": "太阳翼/供电子系统故障"
+    },
+    "SPACECRAFT-FAULT-007": {
+      "title": "空间环境故障:辐射/单粒子翻转/充电"
+    },
+    "SPACECRAFT-FAULT-008": {
+      "title": "真实案例:Ariane 5 Flight 501(1996)火箭制导失效"
+    },
+    "SPACECRAFT-FAULT-009": {
+      "title": "真实案例:Apollo 13(1970)氧气罐爆炸"
+    },
+    "SPACECRAFT-FAULT-010": {
+      "title": "测控/通信链路故障(通用)"
+    },
+    "SPACECRAFT-FAULT-011": {
+      "title": "星载计算机/数据处理故障"
+    },
+    "SPACECRAFT-FAULT-012": {
+      "title": "真实案例:GEO通信卫星业务故障(转发器/轨道保持)"
+    }
+  },
+  "ontology": {
+    "namespace": "tianta:aero",
+    "root_class": "SpacecraftComponent",
+    "classes": [
+      {
+        "name": "AttitudeControlSystem",
+        "parent": "SpacecraftComponent",
+        "components": [
+          "ReactionWheel",
+          "MomentumWheel",
+          "StarSensor",
+          "Gyroscope",
+          "Magnetorquer"
+        ]
+      },
+      {
+        "name": "CommandAndDataHandling",
+        "parent": "SpacecraftComponent",
+        "components": [
+          "OnboardComputer",
+          "CommandProcessor",
+          "FlightSoftware"
+        ]
+      },
+      {
+        "name": "ElectricalPowerSystem",
+        "parent": "SpacecraftComponent",
+        "components": [
+          "SolarArray",
+          "Battery",
+          "PowerController",
+          "Bus"
+        ]
+      },
+      {
+        "name": "GuidanceNavigationControl",
+        "parent": "SpacecraftComponent",
+        "components": [
+          "InertialNavigation",
+          "ThrusterFiringModel",
+          "GroundNavigation",
+          "FlightSoftware"
+        ]
+      },
+      {
+        "name": "OpticalSystem",
+        "parent": "SpacecraftComponent",
+        "components": [
+          "PrimaryMirror",
+          "PointSpreadFunction",
+          "Detector"
+        ]
+      },
+      {
+        "name": "Payload",
+        "parent": "SpacecraftComponent",
+        "components": [
+          "Instrument"
+        ]
+      },
+      {
+        "name": "Propulsion",
+        "parent": "SpacecraftComponent",
+        "components": [
+          "Thruster",
+          "PropellantTank"
+        ]
+      },
+      {
+        "name": "TelemetryTrackingCommand",
+        "parent": "SpacecraftComponent",
+        "components": [
+          "HighGainAntenna",
+          "LowGainAntenna",
+          "Transmitter",
+          "Link"
+        ]
+      },
+      {
+        "name": "ThermalControlSystem",
+        "parent": "SpacecraftComponent",
+        "components": [
+          "Thermistor",
+          "Heater",
+          "Radiator",
+          "OSR"
+        ]
+      },
+      {
+        "name": "TrackingTelemetryCommand",
+        "parent": "SpacecraftComponent",
+        "components": [
+          "Transponder",
+          "Transmitter",
+          "Antenna"
+        ]
+      }
+    ],
+    "instances": [
+      {
+        "id": "INST-RW1",
+        "class": "ReactionWheel",
+        "role": "attitude_actuator"
+      },
+      {
+        "id": "INST-BATT1",
+        "class": "Battery",
+        "role": "energy_storage"
+      },
+      {
+        "id": "INST-THERM1",
+        "class": "Thermistor",
+        "role": "thermal_sensor"
+      },
+      {
+        "id": "INST-TX1",
+        "class": "Transmitter",
+        "role": "ttc_downlink"
+      },
+      {
+        "id": "INST-MCO-NAV",
+        "class": "GuidanceNavigationControl",
+        "role": "ground_navigation_model"
+      },
+      {
+        "id": "INST-MCO-FSW",
+        "class": "FlightSoftware",
+        "role": "attitude_control"
+      },
+      {
+        "id": "INST-MCO-THRUST",
+        "class": "Thruster",
+        "role": "trajectory_correction"
+      },
+      {
+        "id": "INST-HST-FGS1",
+        "class": "FineGuidanceSensor",
+        "role": "pointing_reference"
+      },
+      {
+        "id": "INST-HST-RSU",
+        "class": "Gyroscope",
+        "role": "rate_sensing"
+      },
+      {
+        "id": "INST-GAL-HGA",
+        "class": "HighGainAntenna",
+        "role": "high_rate_downlink"
+      },
+      {
+        "id": "INST-GAL-LGA",
+        "class": "LowGainAntenna",
+        "role": "low_rate_fallback"
+      },
+      {
+        "id": "INST-THRUST1",
+        "class": "Thruster",
+        "role": "station_keeping"
+      },
+      {
+        "id": "INST-SA1",
+        "class": "SolarArray",
+        "role": "power_generation"
+      },
+      {
+        "id": "INST-MEM",
+        "class": "Memory",
+        "role": "flight_memory"
+      },
+      {
+        "id": "INST-IRS1",
+        "class": "InertialReferenceSystem",
+        "role": "guidance"
+      },
+      {
+        "id": "INST-O2TANK2",
+        "class": "PropellantTank",
+        "role": "cryogenic_oxygen"
+      }
+    ],
+    "properties": [
+      {
+        "name": "angular_velocity",
+        "domain": "AttitudeControlSystem",
+        "range": "deg/s",
+        "observable": true
+      },
+      {
+        "name": "antenna_deployed_angle",
+        "domain": "HighGainAntenna",
+        "range": "deg",
+        "observable": true
+      },
+      {
+        "name": "battery_soc",
+        "domain": "Battery",
+        "range": "percent",
+        "observable": true
+      },
+      {
+        "name": "bearing_torque",
+        "domain": "FineGuidanceSensor",
+        "range": "Nm",
+        "observable": true
+      },
+      {
+        "name": "bus_voltage",
+        "domain": "ElectricalPowerSystem",
+        "range": "V",
+        "observable": true
+      },
+      {
+        "name": "link_signal",
+        "domain": "TrackingTelemetryCommand",
+        "range": "dBm",
+        "observable": true
+      },
+      {
+        "name": "motor_current",
+        "domain": "ReactionWheel",
+        "range": "A",
+        "observable": true
+      },
+      {
+        "name": "pointing_error",
+        "domain": "AttitudeControlSystem",
+        "range": "deg",
+        "observable": true
+      },
+      {
+        "name": "psf_concentration",
+        "domain": "OpticalSystem",
+        "range": "ratio",
+        "observable": true
+      },
+      {
+        "name": "solar_array_power",
+        "domain": "SolarArray",
+        "range": "W",
+        "observable": true
+      },
+      {
+        "name": "speed",
+        "domain": "ReactionWheel",
+        "range": "rpm",
+        "observable": true
+      },
+      {
+        "name": "temperature",
+        "domain": "ThermalControlSystem",
+        "range": "degC",
+        "observable": true
+      },
+      {
+        "name": "thruster_impulse",
+        "domain": "Propulsion",
+        "range": "Ns",
+        "observable": true
+      },
+      {
+        "name": "trajectory_altitude",
+        "domain": "GuidanceNavigationControl",
+        "range": "km",
+        "observable": true
+      }
+    ],
+    "relations": [
+      {
+        "type": "component_of",
+        "sub": "ReactionWheel",
+        "super": "AttitudeControlSystem"
+      },
+      {
+        "type": "causes",
+        "from": "SolarArrayDegradation",
+        "to": "PowerShortfall"
+      },
+      {
+        "type": "predicts",
+        "from": "WheelCurrentDrift",
+        "to": "WheelFailure"
+      },
+      {
+        "type": "mitigated_by",
+        "fault": "WheelFailure",
+        "action": "RedundantWheelSwitch"
+      },
+      {
+        "type": "causes",
+        "from": "unit_mismatch_si_vs_customary",
+        "to": "trajectory_altitude_error"
+      },
+      {
+        "type": "causes",
+        "from": "trajectory_altitude_error",
+        "to": "atmospheric_breakup"
+      },
+      {
+        "type": "mitigated_by",
+        "fault": "unit_mismatch",
+        "action": "unified_units_ground_system"
+      },
+      {
+        "type": "causes",
+        "from": "bearing_degradation_coarse_track",
+        "to": "stall_torque"
+      },
+      {
+        "type": "mitigated_by",
+        "fault": "bearing_anomaly",
+        "action": "reduce_coarse_track_operation"
+      },
+      {
+        "type": "mitigated_by",
+        "fault": "bearing_anomaly",
+        "action": "orbital_replacement_unit_swap"
+      },
+      {
+        "type": "causes",
+        "from": "ribs_stuck_after_restraint_release",
+        "to": "antenna_not_fully_deployed"
+      },
+      {
+        "type": "mitigated_by",
+        "fault": "deployment_failure",
+        "action": "use_low_gain_antenna"
+      },
+      {
+        "type": "causes",
+        "from": "thruster_impulse_failure",
+        "to": "orbit_error"
+      },
+      {
+        "type": "causes",
+        "from": "deployment_failure",
+        "to": "power_shortfall"
+      },
+      {
+        "type": "causes",
+        "from": "SEU",
+        "to": "data_corruption"
+      },
+      {
+        "type": "causes",
+        "from": "charging",
+        "to": "electrostatic_discharge"
+      },
+      {
+        "type": "causes",
+        "from": "irs_software_horizontal_velocity_overflow",
+        "to": "loss_guidance_attitude"
+      },
+      {
+        "type": "causes",
+        "from": "loss_guidance",
+        "to": "launch_deviated"
+      },
+      {
+        "type": "causes",
+        "from": "tank_fire",
+        "to": "loss_oxygen_power"
+      },
+      {
+        "type": "causes",
+        "from": "transponder_failure",
+        "to": "link_loss"
+      },
+      {
+        "type": "causes",
+        "from": "antenna_mispoint",
+        "to": "signal_loss"
+      },
+      {
+        "type": "causes",
+        "from": "software_execption",
+        "to": "obc_reboot"
+      },
+      {
+        "type": "causes",
+        "from": "transponder_damage",
+        "to": "revenue_loss_broadcast_outage"
+      }
+    ]
+  },
+  "entries": {
+    "SPACECRAFT-FAULT-001": {
+      "schema_version": "1.0",
+      "knowledge_type": "ontology+simulation",
+      "id": "SPACECRAFT-FAULT-001",
+      "title": "航天器在轨故障本体与仿真知识条目",
+      "domain": [
+        "aerospace",
+        "on-orbit",
+        "reliability",
+        "avionics"
+      ],
+      "created": "2026-10-14",
+      "provenance": {
+        "source": [
+          "AnySearch multi-domain retrieval"
+        ],
+        "references": [
+          "NASA GSFC 1994 Orbital Anomaly Report",
+          "NASA 1983 Anomalies of 44 Unmanned Spacecraft",
+          "Space Weather 2003 spacecraft anomalies database",
+          "IEEE AERO 2021 momentum wheel health monitoring",
+          "Envisat Power FDIR 2006",
+          "TRW US6128555A autonomous FDIR patent"
+        ],
+        "confidence": "high"
+      },
+      "ontology": {
+        "namespace": "tianta:aero",
+        "root_class": "SpacecraftComponent",
+        "classes": [
+          {
+            "name": "AttitudeControlSystem",
+            "parent": "SpacecraftComponent",
+            "components": [
+              "ReactionWheel",
+              "MomentumWheel",
+              "StarSensor",
+              "Gyroscope",
+              "Magnetorquer"
+            ]
+          },
+          {
+            "name": "ElectricalPowerSystem",
+            "parent": "SpacecraftComponent",
+            "components": [
+              "SolarArray",
+              "Battery",
+              "PowerController",
+              "Bus"
+            ]
+          },
+          {
+            "name": "ThermalControlSystem",
+            "parent": "SpacecraftComponent",
+            "components": [
+              "Thermistor",
+              "Heater",
+              "Radiator",
+              "OSR"
+            ]
+          },
+          {
+            "name": "TrackingTelemetryCommand",
+            "parent": "SpacecraftComponent",
+            "components": [
+              "Transponder",
+              "Transmitter",
+              "Antenna"
+            ]
+          },
+          {
+            "name": "Payload",
+            "parent": "SpacecraftComponent",
+            "components": [
+              "Instrument"
+            ]
+          },
+          {
+            "name": "CommandAndDataHandling",
+            "parent": "SpacecraftComponent",
+            "components": [
+              "OnboardComputer",
+              "CommandProcessor",
+              "FlightSoftware"
+            ]
+          },
+          {
+            "name": "Propulsion",
+            "parent": "SpacecraftComponent",
+            "components": [
+              "Thruster",
+              "PropellantTank"
+            ]
+          }
+        ],
+        "instances": [
+          {
+            "id": "INST-RW1",
+            "class": "ReactionWheel",
+            "role": "attitude_actuator"
+          },
+          {
+            "id": "INST-BATT1",
+            "class": "Battery",
+            "role": "energy_storage"
+          },
+          {
+            "id": "INST-THERM1",
+            "class": "Thermistor",
+            "role": "thermal_sensor"
+          },
+          {
+            "id": "INST-TX1",
+            "class": "Transmitter",
+            "role": "ttc_downlink"
+          }
+        ],
+        "properties": [
+          {
+            "name": "speed",
+            "domain": "ReactionWheel",
+            "range": "rpm",
+            "observable": true
+          },
+          {
+            "name": "motor_current",
+            "domain": "ReactionWheel",
+            "range": "A",
+            "observable": true
+          },
+          {
+            "name": "bus_voltage",
+            "domain": "ElectricalPowerSystem",
+            "range": "V",
+            "observable": true
+          },
+          {
+            "name": "battery_soc",
+            "domain": "Battery",
+            "range": "percent",
+            "observable": true
+          },
+          {
+            "name": "temperature",
+            "domain": "ThermalControlSystem",
+            "range": "degC",
+            "observable": true
+          },
+          {
+            "name": "solar_array_power",
+            "domain": "SolarArray",
+            "range": "W",
+            "observable": true
+          },
+          {
+            "name": "pointing_error",
+            "domain": "AttitudeControlSystem",
+            "range": "deg",
+            "observable": true
+          },
+          {
+            "name": "link_signal",
+            "domain": "TrackingTelemetryCommand",
+            "range": "dBm",
+            "observable": true
+          }
+        ],
+        "relations": [
+          {
+            "type": "component_of",
+            "sub": "ReactionWheel",
+            "super": "AttitudeControlSystem"
+          },
+          {
+            "type": "causes",
+            "from": "SolarArrayDegradation",
+            "to": "PowerShortfall"
+          },
+          {
+            "type": "predicts",
+            "from": "WheelCurrentDrift",
+            "to": "WheelFailure"
+          },
+          {
+            "type": "mitigated_by",
+            "fault": "WheelFailure",
+            "action": "RedundantWheelSwitch"
+          }
+        ]
+      },
+      "fault_models": [
+        {
+          "fault_id": "F-ACS-WHEEL",
+          "type": "AttitudeControlFailure",
+          "component": "ReactionWheel",
+          "severity": [
+            "critical",
+            "single_point"
+          ],
+          "symptom": {
+            "telemetry": [
+              "wheel_speed_error",
+              "motor_current_anomaly",
+              "pointing_error"
+            ],
+            "description": "转速/电流偏差增大,指向精度下降,三轴失控"
+          },
+          "cause": {
+            "internal": [
+              "bearing_wear",
+              "motor_degradation"
+            ],
+            "environmental": [
+              "thermal_stress"
+            ]
+          },
+          "recovery": [
+            "redundant_wheel_switch",
+            "fault_tolerant_control",
+            "sun_reacquire"
+          ]
+        },
+        {
+          "fault_id": "F-EPS-BATTERY",
+          "type": "PowerFailure",
+          "component": "Battery",
+          "severity": "high",
+          "symptom": {
+            "telemetry": [
+              "bus_voltage",
+              "battery_soc"
+            ],
+            "description": "母线电压异常,电池过充/欠压"
+          },
+          "cause": {
+            "internal": [
+              "controller_fault",
+              "fpga_bitflip"
+            ],
+            "environmental": [
+              "irradiation"
+            ]
+          },
+          "recovery": [
+            "power_fdir",
+            "charging_algorithm",
+            "redundant_controller"
+          ]
+        },
+        {
+          "fault_id": "F-TCS-THERMISTOR",
+          "type": "ThermalControlFailure",
+          "component": "Thermistor",
+          "severity": "medium",
+          "symptom": {
+            "telemetry": [
+              "temperature"
+            ],
+            "description": "温度遥测异常,热控失效"
+          },
+          "cause": {
+            "internal": [
+              "soldering_fault",
+              "element_degradation"
+            ],
+            "environmental": [
+              "thermal_cycling"
+            ]
+          },
+          "recovery": [
+            "fault_tree_analysis",
+            "heater_algorithm",
+            "material_substitution"
+          ]
+        },
+        {
+          "fault_id": "F-TTC-LINK",
+          "type": "CommunicationFailure",
+          "component": "Transmitter",
+          "severity": [
+            "high",
+            "mission_critical"
+          ],
+          "symptom": {
+            "telemetry": [
+              "link_signal",
+              "downlink_lost"
+            ],
+            "description": "遥测中断,指令无响应"
+          },
+          "cause": {
+            "internal": [
+              "transistor_open_short",
+              "connector_open"
+            ],
+            "environmental": [
+              "radiation"
+            ]
+          },
+          "recovery": [
+            "redundant_ttc_switch",
+            "safe_mode_comm",
+            "anomaly_investigation"
+          ]
+        }
+      ],
+      "simulation": {
+        "state_space": {
+          "states": [
+            "nominal",
+            "degraded",
+            "failed"
+          ],
+          "transitions": {
+            "nominal": [
+              "degraded"
+            ],
+            "degraded": [
+              "failed"
+            ]
+          }
+        },
+        "models": [
+          {
+            "model_id": "MOD-WHEEL",
+            "target": "ReactionWheel",
+            "kind": "first_order_kinetics",
+            "state": [
+              "speed"
+            ],
+            "input": [
+              "torque_command"
+            ],
+            "parameters": {
+              "motor_gain_K": 1.0,
+              "time_const_tau_ms": 100.0,
+              "friction_coeff": 0.02
+            },
+            "fault_injection": {
+              "efficiency_degradation": 0.7,
+              "precision_error_rpm": 5.0
+            },
+            "output": [
+              "wheel_speed",
+              "motor_current"
+            ]
+          },
+          {
+            "model_id": "MOD-BATT",
+            "target": "Battery",
+            "kind": "rc_equivalent_circuit",
+            "state": [
+              "soc",
+              "bus_voltage"
+            ],
+            "input": [
+              "charge_current",
+              "load"
+            ],
+            "parameters": {
+              "capacity_Ah": 30.0,
+              "open_circuit_voltage_V": 28.0
+            },
+            "fault_injection": {
+              "capacity_fade_percent": 0.2,
+              "overcharge_threshold_soc": 0.99
+            },
+            "output": [
+              "bus_voltage",
+              "battery_soc"
+            ]
+          },
+          {
+            "model_id": "MOD-THERM",
+            "target": "ThermalControlSystem",
+            "kind": "thermal_lumped",
+            "state": [
+              "temperature"
+            ],
+            "input": [
+              "heat_load",
+              "heater_power"
+            ],
+            "parameters": {
+              "thermal_mass_J_K": 500.0,
+              "radiance_coeff": 0.05
+            },
+            "fault_injection": {
+              "sensor_bias_degC": 10.0,
+              "heater_off": true
+            },
+            "output": [
+              "temperature",
+              "temperature_derivative"
+            ]
+          }
+        ],
+        "sensors": [
+          "wheel_speed",
+          "motor_current",
+          "bus_voltage",
+          "battery_soc",
+          "temperature",
+          "pointing_error",
+          "link_signal"
+        ],
+        "time_resolution_ms": 100.0,
+        "duration_s": 3600.0,
+        "scenario_templates": [
+          {
+            "id": "SCN-WHEEL-DEGRADE",
+            "fault": "F-ACS-WHEEL",
+            "inject_at_s": 600,
+            "observables": [
+              "wheel_speed_error",
+              "motor_current"
+            ]
+          },
+          {
+            "id": "SCN-BATT-OVERCHARGE",
+            "fault": "F-EPS-BATTERY",
+            "inject_at_s": 300,
+            "observables": [
+              "bus_voltage",
+              "battery_soc"
+            ]
+          },
+          {
+            "id": "SCN-THERM-DRIFT",
+            "fault": "F-TCS-THERMISTOR",
+            "inject_at_s": 900,
+            "observables": [
+              "temperature"
+            ]
+          }
+        ]
+      },
+      "rules": [
+        {
+          "rule_id": "R1",
+          "if": "motor_current > nominal*1.5",
+          "then": "degrade wheel to degraded"
+        },
+        {
+          "rule_id": "R2",
+          "if": "battery_soc > 0.99",
+          "then": "trigger overcharge FDIR, reduce charge"
+        },
+        {
+          "rule_id": "R3",
+          "if": "temperature_derivative > threshold",
+          "then": "raise thermal alarm"
+        },
+        {
+          "rule_id": "R4",
+          "if": "pointing_error > 3deg for 5s",
+          "then": "initiate safe mode attitude hold"
+        },
+        {
+          "rule_id": "R5",
+          "if": "link_signal < -160dBm",
+          "then": "switch redundant downlink"
+        }
+      ],
+      "tags": [
+        "卫星故障",
+        "on-orbit anomaly",
+        "FDIR",
+        "本体",
+        "仿真",
+        "姿态控制",
+        "电源",
+        "热控",
+        "测控"
+      ]
+    },
+    "SPACECRAFT-FAULT-002": {
+      "schema_version": "1.0",
+      "knowledge_type": "ontology+simulation",
+      "id": "SPACECRAFT-FAULT-002",
+      "title": "真实案例:Mars Climate Orbiter(1999)火星气象轨道器失事",
+      "domain": [
+        "aerospace",
+        "guidance-navigation",
+        "software",
+        "unit-conversion"
+      ],
+      "created": "2026-10-14",
+      "provenance": {
+        "source": [
+          "AnySearch multi-domain retrieval",
+          "NASA MCO Mishap Investigation Board"
+        ],
+        "references": [
+          "Nature 1999 Concern over Mars Lander as inquiry reports on Orbiter loss",
+          "NASA Mars Climate Orbiter Mishap Investigation Board Report",
+          "Wikipedia: Mars Climate Orbiter",
+          "SimScale/EverydayAstronaut metric error analyses"
+        ],
+        "confidence": "high",
+        "mission": {
+          "name": "Mars Climate Orbiter (MCO)",
+          "agency": "NASA",
+          "launch": "1998-12-11",
+          "failure_date": "1999-09-23",
+          "cost_mission_usd": 125000000.0
+        }
+      },
+      "ontology": {
+        "namespace": "tianta:aero",
+        "root_class": "SpacecraftComponent",
+        "classes": [
+          {
+            "name": "AttitudeControlSystem",
+            "parent": "SpacecraftComponent",
+            "components": [
+              "ReactionWheel",
+              "MomentumWheel",
+              "StarSensor",
+              "Gyroscope",
+              "FineGuidanceSensor",
+              "Magnetorquer"
+            ]
+          },
+          {
+            "name": "ElectricalPowerSystem",
+            "parent": "SpacecraftComponent",
+            "components": [
+              "SolarArray",
+              "Battery",
+              "PowerController",
+              "Bus"
+            ]
+          },
+          {
+            "name": "GuidanceNavigationControl",
+            "parent": "SpacecraftComponent",
+            "components": [
+              "InertialNavigation",
+              "ThrusterFiringModel",
+              "GroundNavigation",
+              "FlightSoftware"
+            ]
+          },
+          {
+            "name": "TelemetryTrackingCommand",
+            "parent": "SpacecraftComponent",
+            "components": [
+              "HighGainAntenna",
+              "LowGainAntenna",
+              "Transmitter",
+              "Link"
+            ]
+          },
+          {
+            "name": "OpticalSystem",
+            "parent": "SpacecraftComponent",
+            "components": [
+              "PrimaryMirror",
+              "PointSpreadFunction",
+              "Detector"
+            ]
+          },
+          {
+            "name": "CommandAndDataHandling",
+            "parent": "SpacecraftComponent",
+            "components": [
+              "OnboardComputer",
+              "CommandProcessor"
+            ]
+          },
+          {
+            "name": "Propulsion",
+            "parent": "SpacecraftComponent",
+            "components": [
+              "Thruster",
+              "PropellantTank"
+            ]
+          }
+        ],
+        "instances": [
+          {
+            "id": "INST-MCO-NAV",
+            "class": "GuidanceNavigationControl",
+            "role": "ground_navigation_model"
+          },
+          {
+            "id": "INST-MCO-FSW",
+            "class": "FlightSoftware",
+            "role": "attitude_control"
+          },
+          {
+            "id": "INST-MCO-THRUST",
+            "class": "Thruster",
+            "role": "trajectory_correction"
+          }
+        ],
+        "properties": [
+          {
+            "name": "trajectory_altitude",
+            "domain": "GuidanceNavigationControl",
+            "range": "km",
+            "observable": true
+          },
+          {
+            "name": "angular_velocity",
+            "domain": "AttitudeControlSystem",
+            "range": "deg/s",
+            "observable": true
+          },
+          {
+            "name": "thruster_impulse",
+            "domain": "Propulsion",
+            "range": "Ns",
+            "observable": true
+          },
+          {
+            "name": "bearing_torque",
+            "domain": "FineGuidanceSensor",
+            "range": "Nm",
+            "observable": true
+          },
+          {
+            "name": "antenna_deployed_angle",
+            "domain": "HighGainAntenna",
+            "range": "deg",
+            "observable": true
+          },
+          {
+            "name": "psf_concentration",
+            "domain": "OpticalSystem",
+            "range": "ratio",
+            "observable": true
+          }
+        ],
+        "relations": [
+          {
+            "type": "causes",
+            "from": "unit_mismatch_si_vs_customary",
+            "to": "trajectory_altitude_error"
+          },
+          {
+            "type": "causes",
+            "from": "trajectory_altitude_error",
+            "to": "atmospheric_breakup"
+          },
+          {
+            "type": "mitigated_by",
+            "fault": "unit_mismatch",
+            "action": "unified_units_ground_system"
+          }
+        ]
+      },
+      "fault_models": [
+        {
+          "fault_id": "F-MCO-NAV-UNIT",
+          "type": [
+            "SoftwareFailure",
+            "GroundNavigationError",
+            "UnitConversionError"
+          ],
+          "component": "GuidanceNavigationControl",
+          "severity": "catastrophic(mission_lost)",
+          "symptom": {
+            "telemetry": [
+              "trajectory_altitude"
+            ],
+            "description": "轨道器进入火星轨道的近心点过低(约57km,低于预期),最终坠入火星大气解体,遥测丢失"
+          },
+          "cause": {
+            "internal": [
+              "si_metric_and_us_customary_unit_mismatch",
+              "unvalidated_ground_model_input",
+              "software_requirements_defect"
+            ],
+            "environmental": []
+          },
+          "recovery": [
+            "unify_units_in_ground_nav",
+            "force_unit_validation",
+            "regression_test_nav_models",
+            "independent_review_board"
+          ],
+          "mechanism": "地面站计算机模型使用英制(lbf-s)推力冲量数据,而飞行软件按公制(Ns)解释,误算轨道器位置冲量,未被人为捕获。"
+        }
+      ],
+      "simulation": {
+        "state_space": {
+          "states": [
+            "nominal",
+            "trajectory-offset",
+            "atmospheric-entry"
+          ],
+          "transitions": {
+            "nominal": [
+              "trajectory-offset"
+            ],
+            "trajectory-offset": [
+              "atmospheric-entry"
+            ]
+          }
+        },
+        "models": [
+          {
+            "model_id": "MOD-MCO-TRAJ",
+            "target": "GuidanceNavigationControl",
+            "kind": "orbital_propagator",
+            "state": [
+              "altitude",
+              "velocity"
+            ],
+            "input": [
+              "thruster_impulse"
+            ],
+            "parameters": {
+              "thruster_impulse_units": "libf-s_incorrect",
+              "scale_factor_error": 4.45
+            },
+            "fault_injection": {
+              "unit_scale_error_factor": 4.45,
+              "periapsis_error_km": -90.0
+            },
+            "output": [
+              "trajectory_altitude"
+            ]
+          }
+        ],
+        "sensors": [
+          "trajectory_altitude",
+          "velocity"
+        ],
+        "time_resolution_ms": 1000.0,
+        "duration_s": 3600.0,
+        "scenario_templates": [
+          {
+            "id": "SCN-MCO-UNIT",
+            "fault": "F-MCO-NAV-UNIT",
+            "inject_at_s": 600,
+            "observables": [
+              "trajectory_altitude"
+            ]
+          }
+        ]
+      },
+      "rules": [
+        {
+          "rule_id": "R1",
+          "if": "trajectory_altitude < 80km",
+          "then": "alert atmospheric entry, trajectory error"
+        },
+        {
+          "rule_id": "R2",
+          "if": "nav_model_units != FSW_units",
+          "then": "halt maneuver, force unit audit"
+        }
+      ],
+      "tags": [
+        "真实案例",
+        "Mars Climate Orbiter",
+        "单位换算",
+        "导航软件",
+        "软件缺陷",
+        "1999"
+      ]
+    },
+    "SPACECRAFT-FAULT-003": {
+      "schema_version": "1.0",
+      "knowledge_type": "ontology+simulation",
+      "id": "SPACECRAFT-FAULT-003",
+      "title": "真实案例:Hubble Space Telescope 细导星敏感器(FGS)轴承异常",
+      "domain": [
+        "aerospace",
+        "attitude-control",
+        "precision-mechanism",
+        "servo-bearing"
+      ],
+      "created": "2026-10-14",
+      "provenance": {
+        "source": [
+          "AnySearch multi-domain retrieval",
+          "NASA GSFC FGS bearing report"
+        ],
+        "references": [
+          "NASA NTRS: Space Telescope Fine Guidance Sensor Bearing Anomaly (1996)",
+          "The Hubble Space Telescope Servicing Mission (Cambridge 1993)",
+          "Hubble Servicing Mission 3A Media Reference Guide"
+        ],
+        "confidence": "high",
+        "mission": {
+          "name": "Hubble Space Telescope (HST)",
+          "agency": "NASA/ESA",
+          "launch": "1990-04-24",
+          "failure_observed": "1993-1997"
+        }
+      },
+      "ontology": {
+        "namespace": "tianta:aero",
+        "root_class": "SpacecraftComponent",
+        "classes": [
+          {
+            "name": "AttitudeControlSystem",
+            "parent": "SpacecraftComponent",
+            "components": [
+              "ReactionWheel",
+              "MomentumWheel",
+              "StarSensor",
+              "Gyroscope",
+              "FineGuidanceSensor",
+              "Magnetorquer"
+            ]
+          },
+          {
+            "name": "ElectricalPowerSystem",
+            "parent": "SpacecraftComponent",
+            "components": [
+              "SolarArray",
+              "Battery",
+              "PowerController",
+              "Bus"
+            ]
+          },
+          {
+            "name": "GuidanceNavigationControl",
+            "parent": "SpacecraftComponent",
+            "components": [
+              "InertialNavigation",
+              "ThrusterFiringModel",
+              "GroundNavigation",
+              "FlightSoftware"
+            ]
+          },
+          {
+            "name": "TelemetryTrackingCommand",
+            "parent": "SpacecraftComponent",
+            "components": [
+              "HighGainAntenna",
+              "LowGainAntenna",
+              "Transmitter",
+              "Link"
+            ]
+          },
+          {
+            "name": "OpticalSystem",
+            "parent": "SpacecraftComponent",
+            "components": [
+              "PrimaryMirror",
+              "PointSpreadFunction",
+              "Detector"
+            ]
+          },
+          {
+            "name": "CommandAndDataHandling",
+            "parent": "SpacecraftComponent",
+            "components": [
+              "OnboardComputer",
+              "CommandProcessor"
+            ]
+          },
+          {
+            "name": "Propulsion",
+            "parent": "SpacecraftComponent",
+            "components": [
+              "Thruster",
+              "PropellantTank"
+            ]
+          }
+        ],
+        "instances": [
+          {
+            "id": "INST-HST-FGS1",
+            "class": "FineGuidanceSensor",
+            "role": "pointing_reference"
+          },
+          {
+            "id": "INST-HST-RSU",
+            "class": "Gyroscope",
+            "role": "rate_sensing"
+          }
+        ],
+        "properties": [
+          {
+            "name": "trajectory_altitude",
+            "domain": "GuidanceNavigationControl",
+            "range": "km",
+            "observable": true
+          },
+          {
+            "name": "angular_velocity",
+            "domain": "AttitudeControlSystem",
+            "range": "deg/s",
+            "observable": true
+          },
+          {
+            "name": "thruster_impulse",
+            "domain": "Propulsion",
+            "range": "Ns",
+            "observable": true
+          },
+          {
+            "name": "bearing_torque",
+            "domain": "FineGuidanceSensor",
+            "range": "Nm",
+            "observable": true
+          },
+          {
+            "name": "antenna_deployed_angle",
+            "domain": "HighGainAntenna",
+            "range": "deg",
+            "observable": true
+          },
+          {
+            "name": "psf_concentration",
+            "domain": "OpticalSystem",
+            "range": "ratio",
+            "observable": true
+          }
+        ],
+        "relations": [
+          {
+            "type": "causes",
+            "from": "bearing_degradation_coarse_track",
+            "to": "stall_torque"
+          },
+          {
+            "type": "mitigated_by",
+            "fault": "bearing_anomaly",
+            "action": "reduce_coarse_track_operation"
+          },
+          {
+            "type": "mitigated_by",
+            "fault": "bearing_anomaly",
+            "action": "orbital_replacement_unit_swap"
+          }
+        ]
+      },
+      "fault_models": [
+        {
+          "fault_id": "F-HST-FGS-BEARING",
+          "type": [
+            "MechanicalBearingFailure",
+            "PrecisionMechanismDegradation"
+          ],
+          "component": "FineGuidanceSensor",
+          "severity": "high(pointing capability)",
+          "symptom": {
+            "telemetry": [
+              "bearing_torque"
+            ],
+            "description": "FGS 伺服电机多次达到堵转(stall)扭矩,轴承磨损加速,指向保持能力下降"
+          },
+          "cause": {
+            "internal": [
+              "bearing_rocking_degrades_race",
+              "coarse_track_operation",
+              "servo_motor_stall"
+            ],
+            "environmental": [
+              "thermal",
+              "vacuum_lubrication_loss"
+            ]
+          },
+          "recovery": [
+            "reduce_coarse_track_duty_in_fsw",
+            "accelerated_life_test",
+            "scheduled_fgs_replacement_sm2",
+            "orbital_replacement_unit"
+          ],
+          "mechanism": "小角度摇摆运动(Coarse Track)加速轴承磨损,约2000万次循环达到饱和扭矩,与地面寿命试验一致。"
+        },
+        {
+          "fault_id": "F-HST-GYRO",
+          "type": "RateSensorFailure",
+          "component": "Gyroscope",
+          "severity": "high",
+          "symptom": {
+            "telemetry": [
+              "angular_velocity",
+              "gyro_drift"
+            ],
+            "description": "陀螺老化失效,姿态确定能力下降"
+          },
+          "cause": {
+            "internal": [
+              "bearing_wear"
+            ],
+            "environmental": [
+              "life_consumption"
+            ]
+          },
+          "recovery": [
+            "replace_all_six_gyros_sm3a",
+            "servicing_mission"
+          ]
+        }
+      ],
+      "simulation": {
+        "state_space": {
+          "states": [
+            "nominal",
+            "degraded",
+            "stall"
+          ],
+          "transitions": {
+            "nominal": [
+              "degraded"
+            ],
+            "degraded": [
+              "stall"
+            ]
+          }
+        },
+        "models": [
+          {
+            "model_id": "MOD-HST-BRG",
+            "target": "FineGuidanceSensor",
+            "kind": "bearing_life_model",
+            "state": [
+              "bearing_torque",
+              "wear_cycles"
+            ],
+            "input": [
+              "coarse_track_duty"
+            ],
+            "parameters": {
+              "cycles_to_stall": 20000000.0,
+              "stall_torque_Nm": 0.02
+            },
+            "fault_injection": {
+              "duty_cycle": 1.0,
+              "time_to_stall_cycles": 20000000.0
+            },
+            "output": [
+              "bearing_torque"
+            ]
+          }
+        ],
+        "sensors": [
+          "bearing_torque",
+          "angular_velocity"
+        ],
+        "time_resolution_ms": 1000.0,
+        "duration_s": 100000.0,
+        "scenario_templates": [
+          {
+            "id": "SCN-HST-BRG",
+            "fault": "F-HST-FGS-BEARING",
+            "inject_at_s": 50000,
+            "observables": [
+              "bearing_torque"
+            ]
+          }
+        ]
+      },
+      "rules": [
+        {
+          "rule_id": "R1",
+          "if": "bearing_torque > 0.9*stall",
+          "then": "declare FGS degraded, schedule replacement"
+        },
+        {
+          "rule_id": "R2",
+          "if": "wear_cycles > 1.5e7",
+          "then": "reduce coarse track duty to extend life"
+        }
+      ],
+      "tags": [
+        "真实案例",
+        "Hubble",
+        "FGS",
+        "轴承磨损",
+        "伺服",
+        "在轨维修",
+        "SM1/SM2"
+      ]
+    },
+    "SPACECRAFT-FAULT-004": {
+      "schema_version": "1.0",
+      "knowledge_type": "ontology+simulation",
+      "id": "SPACECRAFT-FAULT-004",
+      "title": "真实案例:Galileo 高增益天线(HGA)部署失败",
+      "domain": [
+        "aerospace",
+        "deployable-structure",
+        "antenna",
+        "mechanism"
+      ],
+      "created": "2026-10-14",
+      "provenance": {
+        "source": [
+          "AnySearch multi-domain retrieval",
+          "NASA NTRS Galileo HGA anomaly report"
+        ],
+        "references": [
+          "NASA NTRS: The Galileo high gain antenna deployment anomaly (1994)",
+          "Galileo mission operations records"
+        ],
+        "confidence": "high",
+        "mission": {
+          "name": "Galileo",
+          "agency": "NASA",
+          "launch": "1989-10-18",
+          "failure_date": "1991-04-11"
+        }
+      },
+      "ontology": {
+        "namespace": "tianta:aero",
+        "root_class": "SpacecraftComponent",
+        "classes": [
+          {
+            "name": "AttitudeControlSystem",
+            "parent": "SpacecraftComponent",
+            "components": [
+              "ReactionWheel",
+              "MomentumWheel",
+              "StarSensor",
+              "Gyroscope",
+              "FineGuidanceSensor",
+              "Magnetorquer"
+            ]
+          },
+          {
+            "name": "ElectricalPowerSystem",
+            "parent": "SpacecraftComponent",
+            "components": [
+              "SolarArray",
+              "Battery",
+              "PowerController",
+              "Bus"
+            ]
+          },
+          {
+            "name": "GuidanceNavigationControl",
+            "parent": "SpacecraftComponent",
+            "components": [
+              "InertialNavigation",
+              "ThrusterFiringModel",
+              "GroundNavigation",
+              "FlightSoftware"
+            ]
+          },
+          {
+            "name": "TelemetryTrackingCommand",
+            "parent": "SpacecraftComponent",
+            "components": [
+              "HighGainAntenna",
+              "LowGainAntenna",
+              "Transmitter",
+              "Link"
+            ]
+          },
+          {
+            "name": "OpticalSystem",
+            "parent": "SpacecraftComponent",
+            "components": [
+              "PrimaryMirror",
+              "PointSpreadFunction",
+              "Detector"
+            ]
+          },
+          {
+            "name": "CommandAndDataHandling",
+            "parent": "SpacecraftComponent",
+            "components": [
+              "OnboardComputer",
+              "CommandProcessor"
+            ]
+          },
+          {
+            "name": "Propulsion",
+            "parent": "SpacecraftComponent",
+            "components": [
+              "Thruster",
+              "PropellantTank"
+            ]
+          }
+        ],
+        "instances": [
+          {
+            "id": "INST-GAL-HGA",
+            "class": "HighGainAntenna",
+            "role": "high_rate_downlink"
+          },
+          {
+            "id": "INST-GAL-LGA",
+            "class": "LowGainAntenna",
+            "role": "low_rate_fallback"
+          }
+        ],
+        "properties": [
+          {
+            "name": "trajectory_altitude",
+            "domain": "GuidanceNavigationControl",
+            "range": "km",
+            "observable": true
+          },
+          {
+            "name": "angular_velocity",
+            "domain": "AttitudeControlSystem",
+            "range": "deg/s",
+            "observable": true
+          },
+          {
+            "name": "thruster_impulse",
+            "domain": "Propulsion",
+            "range": "Ns",
+            "observable": true
+          },
+          {
+            "name": "bearing_torque",
+            "domain": "FineGuidanceSensor",
+            "range": "Nm",
+            "observable": true
+          },
+          {
+            "name": "antenna_deployed_angle",
+            "domain": "HighGainAntenna",
+            "range": "deg",
+            "observable": true
+          },
+          {
+            "name": "psf_concentration",
+            "domain": "OpticalSystem",
+            "range": "ratio",
+            "observable": true
+          }
+        ],
+        "relations": [
+          {
+            "type": "causes",
+            "from": "ribs_stuck_after_restraint_release",
+            "to": "antenna_not_fully_deployed"
+          },
+          {
+            "type": "mitigated_by",
+            "fault": "deployment_failure",
+            "action": "use_low_gain_antenna"
+          }
+        ]
+      },
+      "fault_models": [
+        {
+          "fault_id": "F-GAL-HGA-DEPLOY",
+          "type": [
+            "DeployableMechanismFailure",
+            "AntennaDeploymentAnomaly"
+          ],
+          "component": "HighGainAntenna",
+          "severity": "high(data_rate degraded)",
+          "symptom": {
+            "telemetry": [
+              "antenna_deployed_angle"
+            ],
+            "description": "1991-04-11部署序列执行后,伞形高增益天线未能达到完全展开位置,遥测显示部分展开"
+          },
+          "cause": {
+            "internal": [
+              "ribs_stuck_after_restraint_release",
+              "insufficient_deployment_force",
+              "binding_members_overlap"
+            ],
+            "environmental": [
+              "launch_vibration",
+              "thermal",
+              "outgassing_stiction"
+            ]
+          },
+          "recovery": [
+            "repeated_deployment_attempts",
+            "ground_investigation_tests",
+            "use_low_gain_antenna",
+            "data_compression_to_compensate_low_rate"
+          ],
+          "mechanism": "释放约束后,天线肋片卡住未能完全展开,地面分析与试验确定可能失效机理,并制定恢复策略,改用低增益天线+数据压缩维持任务。"
+        }
+      ],
+      "simulation": {
+        "state_space": {
+          "states": [
+            "stowed",
+            "partially-deployed",
+            "fully-deployed"
+          ],
+          "transitions": {
+            "stowed": [
+              "partially-deployed"
+            ],
+            "partially-deployed": [
+              "fully-deployed"
+            ]
+          }
+        },
+        "models": [
+          {
+            "model_id": "MOD-GAL-HGA",
+            "target": "HighGainAntenna",
+            "kind": "deployment_kinetics",
+            "state": [
+              "antenna_deployed_angle"
+            ],
+            "input": [
+              "deployment_command"
+            ],
+            "parameters": {
+              "deployment_force_N": 100.0,
+              "stiction_N": 150.0
+            },
+            "fault_injection": {
+              "binding_force_factor": 1.5,
+              "stuck_angle_deg": 15.0
+            },
+            "output": [
+              "antenna_deployed_angle"
+            ]
+          }
+        ],
+        "sensors": [
+          "antenna_deployed_angle"
+        ],
+        "time_resolution_ms": 100.0,
+        "duration_s": 1200.0,
+        "scenario_templates": [
+          {
+            "id": "SCN-GAL-HGA",
+            "fault": "F-GAL-HGA-DEPLOY",
+            "inject_at_s": 300,
+            "observables": [
+              "antenna_deployed_angle"
+            ]
+          }
+        ]
+      },
+      "rules": [
+        {
+          "rule_id": "R1",
+          "if": "antenna_deployed_angle < 100deg after 600s",
+          "then": "declare deployment failure, switch to LGA"
+        },
+        {
+          "rule_id": "R2",
+          "if": "stiction > deployment_force",
+          "then": "no retry, use fallback link"
+        }
+      ],
+      "tags": [
+        "真实案例",
+        "Galileo",
+        "高增益天线",
+        "可展开机构",
+        "部署失败",
+        "低增益天线",
+        "1991"
+      ]
+    },
+    "SPACECRAFT-FAULT-005": {
+      "schema_version": "1.0",
+      "knowledge_type": "ontology+simulation",
+      "id": "SPACECRAFT-FAULT-005",
+      "title": "推进子系统故障(通用 + 电推进)",
+      "domain": [
+        "aerospace",
+        "propulsion",
+        "thruster"
+      ],
+      "created": "2026-10-14",
+      "provenance": {
+        "source": [
+          "AnySearch retrieval"
+        ],
+        "references": [
+          "Acta Astronautica 2019 station-keeping with electric propulsion failure modes",
+          "Electric propulsion for small satellites (IOP),Hall Thruster on Express (2007)"
+        ],
+        "confidence": "high"
+      },
+      "ontology": {
+        "namespace": "tianta:aero",
+        "root_class": "SpacecraftComponent",
+        "classes": [
+          {
+            "name": "AttitudeControlSystem",
+            "parent": "SpacecraftComponent",
+            "components": [
+              "ReactionWheel",
+              "MomentumWheel",
+              "StarSensor",
+              "Gyroscope",
+              "FineGuidanceSensor",
+              "Magnetorquer"
+            ]
+          },
+          {
+            "name": "ElectricalPowerSystem",
+            "parent": "SpacecraftComponent",
+            "components": [
+              "SolarArray",
+              "Battery",
+              "PowerController",
+              "Bus"
+            ]
+          },
+          {
+            "name": "ThermalControlSystem",
+            "parent": "SpacecraftComponent",
+            "components": [
+              "Thermistor",
+              "Heater",
+              "Radiator",
+              "OSR"
+            ]
+          },
+          {
+            "name": "TelemetryTrackingCommand",
+            "parent": "SpacecraftComponent",
+            "components": [
+              "Transponder",
+              "Transmitter",
+              "HighGainAntenna",
+              "Antenna"
+            ]
+          },
+          {
+            "name": "Payload",
+            "parent": "SpacecraftComponent",
+            "components": [
+              "Instrument",
+              "ScienceDataLink"
+            ]
+          },
+          {
+            "name": "CommandAndDataHandling",
+            "parent": "SpacecraftComponent",
+            "components": [
+              "OnboardComputer",
+              "CommandProcessor",
+              "FlightSoftware",
+              "Memory"
+            ]
+          },
+          {
+            "name": "Propulsion",
+            "parent": "SpacecraftComponent",
+            "components": [
+              "Thruster",
+              "HallThruster",
+              "PropellantTank",
+              "Valve"
+            ]
+          },
+          {
+            "name": "GuidanceNavigationControl",
+            "parent": "SpacecraftComponent",
+            "components": [
+              "InertialReferenceSystem",
+              "InertialNavigation",
+              "GroundNavigation"
+            ]
+          }
+        ],
+        "instances": [
+          {
+            "id": "INST-THRUST1",
+            "class": "Thruster",
+            "role": "station_keeping"
+          }
+        ],
+        "properties": [],
+        "relations": [
+          {
+            "type": "causes",
+            "from": "thruster_impulse_failure",
+            "to": "orbit_error"
+          }
+        ]
+      },
+      "fault_models": [
+        {
+          "fault_id": "F-PROP-THRUSTER",
+          "type": [
+            "PropulsionFailure",
+            "ThrusterFailure"
+          ],
+          "component": "Thruster",
+          "severity": "high",
+          "symptom": {
+            "telemetry": [
+              "thruster_impulse",
+              "orbit"
+            ],
+            "description": "推力/冲量异常,轨道保持失败,推进剂压力异常"
+          },
+          "cause": {
+            "internal": [
+              "valve_failure",
+              "thruster_wear",
+              "propellant_tank_pressure"
+            ],
+            "environmental": []
+          },
+          "recovery": [
+            "redundant_thruster_switch",
+            "propellant_pressure_manage",
+            "station_keeping_replan"
+          ]
+        },
+        {
+          "fault_id": "F-PROP-HALL",
+          "type": "ElectricPropulsionFailure",
+          "component": "HallThruster",
+          "severity": "medium",
+          "symptom": {
+            "telemetry": [
+              "ion_current",
+              "thrust"
+            ],
+            "description": "电推进羽流/离子电流异常,推力下降"
+          },
+          "cause": {
+            "internal": [
+              "cathode_degradation"
+            ],
+            "environmental": []
+          },
+          "recovery": [
+            "thruster_switch",
+            "reduced_thrust_mode"
+          ]
+        }
+      ],
+      "simulation": {
+        "state_space": {
+          "states": [
+            "nominal",
+            "degraded",
+            "failed"
+          ],
+          "transitions": {
+            "nominal": [
+              "degraded"
+            ],
+            "degraded": [
+              "failed"
+            ]
+          }
+        },
+        "models": [
+          {
+            "model_id": "MOD-PROP",
+            "target": "Thruster",
+            "kind": "impulse_model",
+            "state": [
+              "orbital_velocity"
+            ],
+            "input": [
+              "thruster_command"
+            ],
+            "parameters": {
+              "thrust_N": 0.05,
+              "isp": 300
+            },
+            "fault_injection": {
+              "thrust_factor": 0.5
+            },
+            "output": [
+              "thruster_impulse"
+            ]
+          }
+        ],
+        "sensors": [
+          "thruster_impulse",
+          "ion_current"
+        ],
+        "time_resolution_ms": 100.0,
+        "duration_s": 3600.0,
+        "scenario_templates": [
+          {
+            "id": "SCN-PROP",
+            "fault": "F-PROP-THRUSTER",
+            "inject_at_s": 600,
+            "observables": [
+              "thruster_impulse"
+            ]
+          }
+        ]
+      },
+      "rules": [
+        {
+          "rule_id": "R1",
+          "if": "thruster_impulse < 50% nominal",
+          "then": "switch redundant thruster"
+        }
+      ],
+      "tags": [
+        "推进",
+        "电推进",
+        "霍尔推力器",
+        "推力器故障",
+        "轨道保持"
+      ]
+    },
+    "SPACECRAFT-FAULT-006": {
+      "schema_version": "1.0",
+      "knowledge_type": "ontology+simulation",
+      "id": "SPACECRAFT-FAULT-006",
+      "title": "太阳翼/供电子系统故障",
+      "domain": [
+        "aerospace",
+        "power",
+        "solar-array"
+      ],
+      "created": "2026-10-14",
+      "provenance": {
+        "source": [
+          "AnySearch retrieval"
+        ],
+        "references": [
+          "NASA CubeSat solar array deployment study",
+          "XTE solar array deployment & drive system (GSFC)",
+          "Flexible multibody deployment (ABAQUS)"
+        ],
+        "confidence": "high"
+      },
+      "ontology": {
+        "namespace": "tianta:aero",
+        "root_class": "SpacecraftComponent",
+        "classes": [
+          {
+            "name": "AttitudeControlSystem",
+            "parent": "SpacecraftComponent",
+            "components": [
+              "ReactionWheel",
+              "MomentumWheel",
+              "StarSensor",
+              "Gyroscope",
+              "FineGuidanceSensor",
+              "Magnetorquer"
+            ]
+          },
+          {
+            "name": "ElectricalPowerSystem",
+            "parent": "SpacecraftComponent",
+            "components": [
+              "SolarArray",
+              "Battery",
+              "PowerController",
+              "Bus"
+            ]
+          },
+          {
+            "name": "ThermalControlSystem",
+            "parent": "SpacecraftComponent",
+            "components": [
+              "Thermistor",
+              "Heater",
+              "Radiator",
+              "OSR"
+            ]
+          },
+          {
+            "name": "TelemetryTrackingCommand",
+            "parent": "SpacecraftComponent",
+            "components": [
+              "Transponder",
+              "Transmitter",
+              "HighGainAntenna",
+              "Antenna"
+            ]
+          },
+          {
+            "name": "Payload",
+            "parent": "SpacecraftComponent",
+            "components": [
+              "Instrument",
+              "ScienceDataLink"
+            ]
+          },
+          {
+            "name": "CommandAndDataHandling",
+            "parent": "SpacecraftComponent",
+            "components": [
+              "OnboardComputer",
+              "CommandProcessor",
+              "FlightSoftware",
+              "Memory"
+            ]
+          },
+          {
+            "name": "Propulsion",
+            "parent": "SpacecraftComponent",
+            "components": [
+              "Thruster",
+              "HallThruster",
+              "PropellantTank",
+              "Valve"
+            ]
+          },
+          {
+            "name": "GuidanceNavigationControl",
+            "parent": "SpacecraftComponent",
+            "components": [
+              "InertialReferenceSystem",
+              "InertialNavigation",
+              "GroundNavigation"
+            ]
+          }
+        ],
+        "instances": [
+          {
+            "id": "INST-SA1",
+            "class": "SolarArray",
+            "role": "power_generation"
+          }
+        ],
+        "properties": [],
+        "relations": [
+          {
+            "type": "causes",
+            "from": "deployment_failure",
+            "to": "power_shortfall"
+          }
+        ]
+      },
+      "fault_models": [
+        {
+          "fault_id": "F-PWR-SOLAR-DEPLOY",
+          "type": [
+            "PowerFailure",
+            "DeploymentFailure"
+          ],
+          "component": "SolarArray",
+          "severity": [
+            "high",
+            "common_cubeSat_failure"
+          ],
+          "symptom": {
+            "telemetry": [
+              "solar_array_power",
+              "deployed_angle"
+            ],
+            "description": "太阳翼未完全展开,发电功率不足(小卫星最常见故障原因)"
+          },
+          "cause": {
+            "internal": [
+              "hinge_failure",
+              "boom_stuck",
+              "damping_issue"
+            ],
+            "environmental": [
+              "launch_vibration",
+              "thermal"
+            ]
+          },
+          "recovery": [
+            "retry_deployment",
+            "manual_swing",
+            "power_management",
+            "reduced_load"
+          ]
+        },
+        {
+          "fault_id": "F-PWR-SOLAR-DEGRADE",
+          "type": "PowerDegradation",
+          "component": "SolarArray",
+          "severity": "medium",
+          "symptom": {
+            "telemetry": [
+              "solar_array_power"
+            ],
+            "description": "辐照损伤/温度致功率缓慢下降"
+          },
+          "cause": {
+            "internal": [
+              "radiation_damage",
+              "thermal"
+            ],
+            "environmental": [
+              "radiation"
+            ]
+          },
+          "recovery": [
+            "power_reallocate",
+            "derating"
+          ]
+        }
+      ],
+      "simulation": {
+        "state_space": {
+          "states": [
+            "stowed",
+            "partial",
+            "deployed",
+            "degraded"
+          ],
+          "transitions": {
+            "stowed": [
+              "partial",
+              "deployed"
+            ],
+            "partial": [
+              "deployed"
+            ],
+            "deployed": [
+              "degraded"
+            ]
+          }
+        },
+        "models": [
+          {
+            "model_id": "MOD-SOLAR",
+            "target": "SolarArray",
+            "kind": "deployment+power",
+            "state": [
+              "deployed_angle",
+              "power_out"
+            ],
+            "input": [
+              "deployment_command"
+            ],
+            "parameters": {
+              "deployment_force_N": 50.0,
+              "cell_efficiency": 0.3
+            },
+            "fault_injection": {
+              "stuck_angle_deg": 10.0,
+              "power_factor": 0.1
+            },
+            "output": [
+              "solar_array_power"
+            ]
+          }
+        ],
+        "sensors": [
+          "solar_array_power",
+          "deployed_angle"
+        ],
+        "time_resolution_ms": 100.0,
+        "duration_s": 3600.0,
+        "scenario_templates": [
+          {
+            "id": "SCN-SOLAR",
+            "fault": "F-PWR-SOLAR-DEPLOY",
+            "inject_at_s": 300,
+            "observables": [
+              "solar_array_power"
+            ]
+          }
+        ]
+      },
+      "rules": [
+        {
+          "rule_id": "R1",
+          "if": "solar_array_power < 20% expected",
+          "then": "declare deployment failure, power manage"
+        }
+      ],
+      "tags": [
+        "太阳翼",
+        "供电",
+        "部署失败",
+        "发电",
+        "小卫星"
+      ]
+    },
+    "SPACECRAFT-FAULT-007": {
+      "schema_version": "1.0",
+      "knowledge_type": "ontology+simulation",
+      "id": "SPACECRAFT-FAULT-007",
+      "title": "空间环境故障:辐射/单粒子翻转/充电",
+      "domain": [
+        "aerospace",
+        "space-environment",
+        "radiation",
+        "SEU"
+      ],
+      "created": "2026-10-14",
+      "provenance": {
+        "source": [
+          "AnySearch retrieval"
+        ],
+        "references": [
+          "SEU rate estimates 16-K CMOS SRAM (IEEE TNS 1985)",
+          "Beidou SEU/LET monitor",
+          "Mega satellite constellation under SEU (IEEE TCOMM)",
+          "BRAM SEU sensor (IEEE)",
+          "1859 superstorm transponder impact"
+        ],
+        "confidence": "high"
+      },
+      "ontology": {
+        "namespace": "tianta:aero",
+        "root_class": "SpacecraftComponent",
+        "classes": [
+          {
+            "name": "AttitudeControlSystem",
+            "parent": "SpacecraftComponent",
+            "components": [
+              "ReactionWheel",
+              "MomentumWheel",
+              "StarSensor",
+              "Gyroscope",
+              "FineGuidanceSensor",
+              "Magnetorquer"
+            ]
+          },
+          {
+            "name": "ElectricalPowerSystem",
+            "parent": "SpacecraftComponent",
+            "components": [
+              "SolarArray",
+              "Battery",
+              "PowerController",
+              "Bus"
+            ]
+          },
+          {
+            "name": "ThermalControlSystem",
+            "parent": "SpacecraftComponent",
+            "components": [
+              "Thermistor",
+              "Heater",
+              "Radiator",
+              "OSR"
+            ]
+          },
+          {
+            "name": "TelemetryTrackingCommand",
+            "parent": "SpacecraftComponent",
+            "components": [
+              "Transponder",
+              "Transmitter",
+              "HighGainAntenna",
+              "Antenna"
+            ]
+          },
+          {
+            "name": "Payload",
+            "parent": "SpacecraftComponent",
+            "components": [
+              "Instrument",
+              "ScienceDataLink"
+            ]
+          },
+          {
+            "name": "CommandAndDataHandling",
+            "parent": "SpacecraftComponent",
+            "components": [
+              "OnboardComputer",
+              "CommandProcessor",
+              "FlightSoftware",
+              "Memory"
+            ]
+          },
+          {
+            "name": "Propulsion",
+            "parent": "SpacecraftComponent",
+            "components": [
+              "Thruster",
+              "HallThruster",
+              "PropellantTank",
+              "Valve"
+            ]
+          },
+          {
+            "name": "GuidanceNavigationControl",
+            "parent": "SpacecraftComponent",
+            "components": [
+              "InertialReferenceSystem",
+              "InertialNavigation",
+              "GroundNavigation"
+            ]
+          }
+        ],
+        "instances": [
+          {
+            "id": "INST-MEM",
+            "class": "Memory",
+            "role": "flight_memory"
+          }
+        ],
+        "properties": [],
+        "relations": [
+          {
+            "type": "causes",
+            "from": "SEU",
+            "to": "data_corruption"
+          },
+          {
+            "type": "causes",
+            "from": "charging",
+            "to": "electrostatic_discharge"
+          }
+        ]
+      },
+      "fault_models": [
+        {
+          "fault_id": "F-ENV-SEU",
+          "type": "RadiationEffect",
+          "component": "Memory",
+          "severity": "medium",
+          "symptom": {
+            "telemetry": [
+              "memory_error",
+              "reboot_count"
+            ],
+            "description": "单粒子翻转导致内存数据错误、通信组件异常、星载计算机需纠错/重启"
+          },
+          "cause": {
+            "environmental": [
+              "heavy_ion",
+              "solar_proton",
+              "cosmic_ray"
+            ],
+            "internal": [
+              "critical_charge_low"
+            ]
+          },
+          "recovery": [
+            "error_correction_edac",
+            "scrubbing",
+            "watchdog_reboot",
+            "memory_reloaded"
+          ]
+        },
+        {
+          "fault_id": "F-ENV-CHARGING",
+          "type": "ElectrostaticEffect",
+          "component": "Bus",
+          "severity": [
+            "high",
+            "damaging"
+          ],
+          "symptom": {
+            "telemetry": [
+              "surge",
+              "efield"
+            ],
+            "description": "表面/深充导致静电放电,损伤电子器件"
+          },
+          "cause": {
+            "environmental": [
+              "energetic_electron",
+              "geo_magnetic"
+            ],
+            "internal": []
+          },
+          "recovery": [
+            "grounded_surface",
+            "discharge_mitigation",
+            "sensitive_gPU_protection"
+          ]
+        }
+      ],
+      "simulation": {
+        "state_space": {
+          "states": [
+            "nominal",
+            "SEE",
+            "latchup"
+          ],
+          "transitions": {
+            "nominal": [
+              "SEE"
+            ],
+            "SEE": [
+              "latchup"
+            ]
+          }
+        },
+        "models": [
+          {
+            "model_id": "MOD-SEU",
+            "target": "Memory",
+            "kind": "upset_rate_model",
+            "state": [
+              "error_count"
+            ],
+            "input": [
+              "radiation_flux"
+            ],
+            "parameters": {
+              "critical_charge_pC": 0.01,
+              "upset_rate_per_day": 0.5
+            },
+            "fault_injection": {
+              "upt_set_rate_x10": 10.0
+            },
+            "output": [
+              "memory_error"
+            ]
+          }
+        ],
+        "sensors": [
+          "memory_error",
+          "reboot_count"
+        ],
+        "time_resolution_ms": 1000.0,
+        "duration_s": 86400.0,
+        "scenario_templates": [
+          {
+            "id": "SCN-SEU",
+            "fault": "F-ENV-SEU",
+            "inject_at_s": 3600,
+            "observables": [
+              "memory_error"
+            ]
+          }
+        ]
+      },
+      "rules": [
+        {
+          "rule_id": "R1",
+          "if": "memory_error_rate > threshold",
+          "then": "trigger EDAC+scrubbing"
+        },
+        {
+          "rule_id": "R2",
+          "if": "surge detected",
+          "then": "initiate discharge mitigation"
+        }
+      ],
+      "tags": [
+        "辐射",
+        "单粒子翻转",
+        "SEU",
+        "静电",
+        "空间环境",
+        "纠错"
+      ]
+    },
+    "SPACECRAFT-FAULT-008": {
+      "schema_version": "1.0",
+      "knowledge_type": "ontology+simulation",
+      "id": "SPACECRAFT-FAULT-008",
+      "title": "真实案例:Ariane 5 Flight 501(1996)火箭制导失效",
+      "domain": [
+        "aerospace",
+        "launcher",
+        "software",
+        "inertial-navigation"
+      ],
+      "created": "2026-10-14",
+      "provenance": {
+        "source": [
+          "AnySearch retrieval"
+        ],
+        "references": [
+          "ESA Ariane 501 Inquiry Board report",
+          "Ariane 5 Flight 501 analysis",
+          "Ariane flight V88 reused-code failure"
+        ],
+        "confidence": "high",
+        "mission": {
+          "name": "Ariane 5 Flight 501",
+          "company": "ESA/CNES/Arianespace",
+          "failure_date": "1996-06-04"
+        }
+      },
+      "ontology": {
+        "namespace": "tianta:aero",
+        "root_class": "SpacecraftComponent",
+        "classes": [
+          {
+            "name": "AttitudeControlSystem",
+            "parent": "SpacecraftComponent",
+            "components": [
+              "ReactionWheel",
+              "MomentumWheel",
+              "StarSensor",
+              "Gyroscope",
+              "FineGuidanceSensor",
+              "Magnetorquer"
+            ]
+          },
+          {
+            "name": "ElectricalPowerSystem",
+            "parent": "SpacecraftComponent",
+            "components": [
+              "SolarArray",
+              "Battery",
+              "PowerController",
+              "Bus"
+            ]
+          },
+          {
+            "name": "ThermalControlSystem",
+            "parent": "SpacecraftComponent",
+            "components": [
+              "Thermistor",
+              "Heater",
+              "Radiator",
+              "OSR"
+            ]
+          },
+          {
+            "name": "TelemetryTrackingCommand",
+            "parent": "SpacecraftComponent",
+            "components": [
+              "Transponder",
+              "Transmitter",
+              "HighGainAntenna",
+              "Antenna"
+            ]
+          },
+          {
+            "name": "Payload",
+            "parent": "SpacecraftComponent",
+            "components": [
+              "Instrument",
+              "ScienceDataLink"
+            ]
+          },
+          {
+            "name": "CommandAndDataHandling",
+            "parent": "SpacecraftComponent",
+            "components": [
+              "OnboardComputer",
+              "CommandProcessor",
+              "FlightSoftware",
+              "Memory"
+            ]
+          },
+          {
+            "name": "Propulsion",
+            "parent": "SpacecraftComponent",
+            "components": [
+              "Thruster",
+              "HallThruster",
+              "PropellantTank",
+              "Valve"
+            ]
+          },
+          {
+            "name": "GuidanceNavigationControl",
+            "parent": "SpacecraftComponent",
+            "components": [
+              "InertialReferenceSystem",
+              "InertialNavigation",
+              "GroundNavigation"
+            ]
+          }
+        ],
+        "instances": [
+          {
+            "id": "INST-IRS1",
+            "class": "InertialReferenceSystem",
+            "role": "guidance"
+          }
+        ],
+        "properties": [],
+        "relations": [
+          {
+            "type": "causes",
+            "from": "irs_software_horizontal_velocity_overflow",
+            "to": "loss_guidance_attitude"
+          },
+          {
+            "type": "causes",
+            "from": "loss_guidance",
+            "to": "launch_deviated"
+          }
+        ]
+      },
+      "fault_models": [
+        {
+          "fault_id": "F-ARI501-IRS-SW",
+          "type": [
+            "SoftwareFailure",
+            "GuidanceFailure"
+          ],
+          "component": "InertialReferenceSystem",
+          "severity": "catastrophic(launch_failure)",
+          "symptom": {
+            "telemetry": [
+              "guidance_data"
+            ],
+            "description": "主发动机点火后37秒失去全部制导与姿态信息(升空30秒),运载火箭偏离,自毁"
+          },
+          "cause": {
+            "internal": [
+              "horizontal_velocity_64bit_overflow_in_ada",
+              "reused_flight_code_without_revalidation",
+              "unnecessary_routine_running_during_flight"
+            ]
+          },
+          "recovery": [
+            "disable_alignment_after_lift_off",
+            "no_unneeded_sw_during_flight",
+            "revalidate_reused_code",
+            "inquiry_board"
+          ]
+        }
+      ],
+      "simulation": {
+        "state_space": {
+          "states": [
+            "ok",
+            "overflow",
+            "loss_guidance"
+          ],
+          "transitions": {
+            "ok": [
+              "overflow"
+            ],
+            "overflow": [
+              "loss_guidance"
+            ]
+          }
+        },
+        "models": [
+          {
+            "model_id": "MOD-ARI-IRS",
+            "target": "InertialReferenceSystem",
+            "kind": "velocity_overflow",
+            "state": [
+              "horizontal_velocity"
+            ],
+            "input": [
+              "time"
+            ],
+            "parameters": {
+              "overflow_threshold": 65535.0,
+              "t_overflow_s": 37
+            },
+            "fault_injection": {
+              "velocity_factor": 1.0
+            },
+            "output": [
+              "guidance_data"
+            ]
+          }
+        ],
+        "sensors": [
+          "guidance_data"
+        ],
+        "time_resolution_ms": 100.0,
+        "duration_s": 120.0,
+        "scenario_templates": [
+          {
+            "id": "SCN-ARI501",
+            "fault": "F-ARI501-IRS-SW",
+            "inject_at_s": 37,
+            "observables": [
+              "guidance_data"
+            ]
+          }
+        ]
+      },
+      "rules": [
+        {
+          "rule_id": "R1",
+          "if": "velocity > overflow_threshold",
+          "then": "flag overflow, guidance degraded"
+        }
+      ],
+      "tags": [
+        "真实案例",
+        "Ariane5",
+        "501",
+        "软件缺陷",
+        "惯导",
+        "1996",
+        "整型溢出"
+      ]
+    },
+    "SPACECRAFT-FAULT-009": {
+      "schema_version": "1.0",
+      "knowledge_type": "ontology+simulation",
+      "id": "SPACECRAFT-FAULT-009",
+      "title": "真实案例:Apollo 13(1970)氧气罐爆炸",
+      "domain": [
+        "aerospace",
+        "crewed-mission",
+        "cryogenic",
+        "electrical"
+      ],
+      "created": "2026-10-14",
+      "provenance": {
+        "source": [
+          "AnySearch retrieval"
+        ],
+        "references": [
+          "NASA Apollo 13 Review Board Report (TMX-65270)",
+          "Apollo Lesson Sampler: Apollo 13",
+          "Apollo 13 Mission Report"
+        ],
+        "confidence": "high",
+        "mission": {
+          "name": "Apollo 13",
+          "agency": "NASA",
+          "failure_date": "1970-04-13"
+        }
+      },
+      "ontology": {
+        "namespace": "tianta:aero",
+        "root_class": "SpacecraftComponent",
+        "classes": [
+          {
+            "name": "AttitudeControlSystem",
+            "parent": "SpacecraftComponent",
+            "components": [
+              "ReactionWheel",
+              "MomentumWheel",
+              "StarSensor",
+              "Gyroscope",
+              "FineGuidanceSensor",
+              "Magnetorquer"
+            ]
+          },
+          {
+            "name": "ElectricalPowerSystem",
+            "parent": "SpacecraftComponent",
+            "components": [
+              "SolarArray",
+              "Battery",
+              "PowerController",
+              "Bus"
+            ]
+          },
+          {
+            "name": "ThermalControlSystem",
+            "parent": "SpacecraftComponent",
+            "components": [
+              "Thermistor",
+              "Heater",
+              "Radiator",
+              "OSR"
+            ]
+          },
+          {
+            "name": "TelemetryTrackingCommand",
+            "parent": "SpacecraftComponent",
+            "components": [
+              "Transponder",
+              "Transmitter",
+              "HighGainAntenna",
+              "Antenna"
+            ]
+          },
+          {
+            "name": "Payload",
+            "parent": "SpacecraftComponent",
+            "components": [
+              "Instrument",
+              "ScienceDataLink"
+            ]
+          },
+          {
+            "name": "CommandAndDataHandling",
+            "parent": "SpacecraftComponent",
+            "components": [
+              "OnboardComputer",
+              "CommandProcessor",
+              "FlightSoftware",
+              "Memory"
+            ]
+          },
+          {
+            "name": "Propulsion",
+            "parent": "SpacecraftComponent",
+            "components": [
+              "Thruster",
+              "HallThruster",
+              "PropellantTank",
+              "Valve"
+            ]
+          },
+          {
+            "name": "GuidanceNavigationControl",
+            "parent": "SpacecraftComponent",
+            "components": [
+              "InertialReferenceSystem",
+              "InertialNavigation",
+              "GroundNavigation"
+            ]
+          }
+        ],
+        "instances": [
+          {
+            "id": "INST-O2TANK2",
+            "class": "PropellantTank",
+            "role": "cryogenic_oxygen"
+          }
+        ],
+        "properties": [],
+        "relations": [
+          {
+            "type": "causes",
+            "from": "tank_fire",
+            "to": "loss_oxygen_power"
+          }
+        ]
+      },
+      "fault_models": [
+        {
+          "fault_id": "F-APOLLO13-O2TANK",
+          "type": [
+            "CryogenicFailure",
+            "FireExplosion"
+          ],
+          "component": "PropellantTank",
+          "severity": "catastrophic(mission abort)",
+          "symptom": {
+            "telemetry": [
+              "tank_pressure",
+              "power",
+              "oxygen"
+            ],
+            "description": "约56小时服务舱氧气罐#2起火爆炸,失去氧气与电力,任务中止,利用登月舱氧气/电力返回"
+          },
+          "cause": {
+            "internal": [
+              "tank_overheating_from_heater",
+              "manuf_tank_processing_history",
+              "teflon_wiring_insulation_under_heated_tank"
+            ],
+            "environmental": []
+          },
+          "recovery": [
+            "lunar_module_as_lifeboat",
+            "power_off_nonessential",
+            "manual_trajectory",
+            "successful_entry"
+          ]
+        }
+      ],
+      "simulation": {
+        "state_space": {
+          "states": [
+            "ok",
+            "overheat",
+            "fire"
+          ],
+          "transitions": {
+            "ok": [
+              "overheat"
+            ],
+            "overheat": [
+              "fire"
+            ]
+          }
+        },
+        "models": [
+          {
+            "model_id": "MOD-APOLLO-O2",
+            "target": "PropellantTank",
+            "kind": "pressure_thermal",
+            "state": [
+              "tank_pressure",
+              "tank_temp"
+            ],
+            "input": [
+              "heater_power"
+            ],
+            "parameters": {
+              "critical_pressure_psi": 1000.0
+            },
+            "fault_injection": {
+              "heater_stuck_on": true,
+              "ignition_temp_K": 500.0
+            },
+            "output": [
+              "tank_pressure"
+            ]
+          }
+        ],
+        "sensors": [
+          "tank_pressure",
+          "power",
+          "oxygen"
+        ],
+        "time_resolution_ms": 1000.0,
+        "duration_s": 86400.0,
+        "scenario_templates": [
+          {
+            "id": "SCN-APOLLO13",
+            "fault": "F-APOLLO13-O2TANK",
+            "inject_at_s": 300,
+            "observables": [
+              "tank_pressure"
+            ]
+          }
+        ]
+      },
+      "rules": [
+        {
+          "rule_id": "R1",
+          "if": "tank_temp > ignition_temp",
+          "then": "emergency, isolate tank"
+        },
+        {
+          "rule_id": "R2",
+          "if": "oxygen lost",
+          "then": "switch to lunar module lifeboat"
+        }
+      ],
+      "tags": [
+        "真实案例",
+        "Apollo13",
+        "氧气罐",
+        "低温",
+        "爆炸",
+        "1970",
+        "载人"
+      ]
+    },
+    "SPACECRAFT-FAULT-010": {
+      "schema_version": "1.0",
+      "knowledge_type": "ontology+simulation",
+      "id": "SPACECRAFT-FAULT-010",
+      "title": "测控/通信链路故障(通用)",
+      "domain": [
+        "aerospace",
+        "ttc",
+        "communication"
+      ],
+      "created": "2026-10-14",
+      "provenance": {
+        "source": [
+          "AnySearch retrieval"
+        ],
+        "references": [
+          "TT&C tutorial (IEEE COMST 2023)",
+          "SATCOM recovery strategies (Waldon)",
+          "Satellite communication review"
+        ],
+        "confidence": "high"
+      },
+      "ontology": {
+        "namespace": "tianta:aero",
+        "root_class": "SpacecraftComponent",
+        "classes": [
+          {
+            "name": "AttitudeControlSystem",
+            "parent": "SpacecraftComponent",
+            "components": [
+              "ReactionWheel",
+              "MomentumWheel",
+              "StarSensor",
+              "Gyroscope",
+              "Magnetorquer"
+            ]
+          },
+          {
+            "name": "ElectricalPowerSystem",
+            "parent": "SpacecraftComponent",
+            "components": [
+              "SolarArray",
+              "Battery",
+              "PowerController"
+            ]
+          },
+          {
+            "name": "ThermalControlSystem",
+            "parent": "SpacecraftComponent",
+            "components": [
+              "Thermistor",
+              "Heater"
+            ]
+          },
+          {
+            "name": "TelemetryTrackingCommand",
+            "parent": "SpacecraftComponent",
+            "components": [
+              "Transponder",
+              "Transmitter",
+              "Antenna",
+              "Link"
+            ]
+          },
+          {
+            "name": "Payload",
+            "parent": "SpacecraftComponent",
+            "components": [
+              "Instrument"
+            ]
+          },
+          {
+            "name": "CommandAndDataHandling",
+            "parent": "SpacecraftComponent",
+            "components": [
+              "OnboardComputer",
+              "CommandProcessor",
+              "FlightSoftware",
+              "Clock"
+            ]
+          },
+          {
+            "name": "GuidanceNavigationControl",
+            "parent": "SpacecraftComponent",
+            "components": [
+              "InertialReferenceSystem"
+            ]
+          }
+        ],
+        "instances": [],
+        "properties": [],
+        "relations": [
+          {
+            "type": "causes",
+            "from": "transponder_failure",
+            "to": "link_loss"
+          },
+          {
+            "type": "causes",
+            "from": "antenna_mispoint",
+            "to": "signal_loss"
+          }
+        ]
+      },
+      "fault_models": [
+        {
+          "fault_id": "F-TTC-TRANSPONDER",
+          "type": "CommunicationFailure",
+          "component": "Transponder",
+          "severity": "high",
+          "symptom": {
+            "telemetry": [
+              "link_signal",
+              "bit_error"
+            ],
+            "description": "转发器失效/降级,链路中断,通信品质下降"
+          },
+          "cause": {
+            "internal": [
+              "power_amplifier_failure",
+              "upconverter_drift",
+              "aging"
+            ],
+            "environmental": [
+              "radiation"
+            ]
+          },
+          "recovery": [
+            "redundant_transponder_switch",
+            "power_managed_operation",
+            "spare_transponder_use"
+          ]
+        },
+        {
+          "fault_id": "F-TTC-ANTENNA",
+          "type": "CommunicationFailure",
+          "component": "Antenna",
+          "severity": "high",
+          "symptom": {
+            "telemetry": [
+              "link_signal",
+              "pointing"
+            ],
+            "description": "天线对地指向偏差/指向机构故障,信号衰减"
+          },
+          "cause": {
+            "internal": [
+              "gimbal_failure",
+              "deployment_issue"
+            ],
+            "environmental": []
+          },
+          "recovery": [
+            "repoint_command",
+            "fallback_low_gain"
+          ]
+        }
+      ],
+      "simulation": {
+        "state_space": {
+          "states": [
+            "nominal",
+            "degraded",
+            "lost"
+          ],
+          "transitions": {
+            "nominal": [
+              "degraded"
+            ],
+            "degraded": [
+              "lost"
+            ]
+          }
+        },
+        "models": [
+          {
+            "model_id": "MOD-TTC",
+            "target": "Transponder",
+            "kind": "link_budget",
+            "state": [
+              "link_signal"
+            ],
+            "input": [
+              "power"
+            ],
+            "parameters": {
+              "tx_power_W": 50.0,
+              "antenna_gain_dbi": 30
+            },
+            "fault_injection": {
+              "power_factor": 0.1,
+              "noise_temp_K": 1000
+            },
+            "output": [
+              "link_signal"
+            ]
+          }
+        ],
+        "sensors": [
+          "link_signal",
+          "bit_error"
+        ],
+        "time_resolution_ms": 100.0,
+        "duration_s": 3600.0,
+        "scenario_templates": [
+          {
+            "id": "SCN-TTC",
+            "fault": "F-TTC-TRANSPONDER",
+            "inject_at_s": 600,
+            "observables": [
+              "link_signal"
+            ]
+          }
+        ]
+      },
+      "rules": [
+        {
+          "rule_id": "R1",
+          "if": "link_signal < -160dBm",
+          "then": "switch redundant transponder"
+        }
+      ],
+      "tags": [
+        "测控",
+        "通信",
+        "转发器",
+        "天线",
+        "链路",
+        "TT&C"
+      ]
+    },
+    "SPACECRAFT-FAULT-011": {
+      "schema_version": "1.0",
+      "knowledge_type": "ontology+simulation",
+      "id": "SPACECRAFT-FAULT-011",
+      "title": "星载计算机/数据处理故障",
+      "domain": [
+        "aerospace",
+        "obc",
+        "software",
+        "computer"
+      ],
+      "created": "2026-10-14",
+      "provenance": {
+        "source": [
+          "AnySearch retrieval"
+        ],
+        "references": [
+          "Requirements-related software failures (including Therac-25/Ariane leaks)",
+          "Fault-tolerant real-time computer system (NASA Tech Briefs)",
+          "MSC robustness recovery"
+        ],
+        "confidence": "high"
+      },
+      "ontology": {
+        "namespace": "tianta:aero",
+        "root_class": "SpacecraftComponent",
+        "classes": [
+          {
+            "name": "AttitudeControlSystem",
+            "parent": "SpacecraftComponent",
+            "components": [
+              "ReactionWheel",
+              "MomentumWheel",
+              "StarSensor",
+              "Gyroscope",
+              "Magnetorquer"
+            ]
+          },
+          {
+            "name": "ElectricalPowerSystem",
+            "parent": "SpacecraftComponent",
+            "components": [
+              "SolarArray",
+              "Battery",
+              "PowerController"
+            ]
+          },
+          {
+            "name": "ThermalControlSystem",
+            "parent": "SpacecraftComponent",
+            "components": [
+              "Thermistor",
+              "Heater"
+            ]
+          },
+          {
+            "name": "TelemetryTrackingCommand",
+            "parent": "SpacecraftComponent",
+            "components": [
+              "Transponder",
+              "Transmitter",
+              "Antenna",
+              "Link"
+            ]
+          },
+          {
+            "name": "Payload",
+            "parent": "SpacecraftComponent",
+            "components": [
+              "Instrument"
+            ]
+          },
+          {
+            "name": "CommandAndDataHandling",
+            "parent": "SpacecraftComponent",
+            "components": [
+              "OnboardComputer",
+              "CommandProcessor",
+              "FlightSoftware",
+              "Clock"
+            ]
+          },
+          {
+            "name": "GuidanceNavigationControl",
+            "parent": "SpacecraftComponent",
+            "components": [
+              "InertialReferenceSystem"
+            ]
+          }
+        ],
+        "instances": [],
+        "properties": [],
+        "relations": [
+          {
+            "type": "causes",
+            "from": "software_execption",
+            "to": "obc_reboot"
+          }
+        ]
+      },
+      "fault_models": [
+        {
+          "fault_id": "F-OBC-LOCKUP",
+          "type": "OnboardComputerFailure",
+          "component": "OnboardComputer",
+          "severity": "high",
+          "symptom": {
+            "telemetry": [
+              "reboot_count",
+              "cpu_health"
+            ],
+            "description": "星载计算机死锁/复位,指令处理中断,需看门狗重启"
+          },
+          "cause": {
+            "internal": [
+              "software_exception",
+              "memory_corruption",
+              "unexpected_input"
+            ],
+            "environmental": [
+              "SEU",
+              "single_event_latchup"
+            ]
+          },
+          "recovery": [
+            "watchdog_reboot",
+            "redundant_computer_switch",
+            "software_patch_reload",
+            "memory_scrub"
+          ]
+        },
+        {
+          "fault_id": "F-OBC-CLOCK",
+          "type": "TimingFault",
+          "component": "CommandAndDataHandling",
+          "severity": "medium",
+          "symptom": {
+            "telemetry": [
+              "time_sync"
+            ],
+            "description": "时钟漂移/失步,任务调度错乱"
+          },
+          "cause": {
+            "internal": [
+              "oscillator_drift",
+              "clock_fault"
+            ],
+            "environmental": []
+          },
+          "recovery": [
+            "resync",
+            "redundant_oscillator"
+          ]
+        }
+      ],
+      "simulation": {
+        "state_space": {
+          "states": [
+            "running",
+            "suspended",
+            "reboot"
+          ],
+          "transitions": {
+            "running": [
+              "suspended"
+            ],
+            "suspended": [
+              "reboot"
+            ]
+          }
+        },
+        "models": [
+          {
+            "model_id": "MOD-OBC",
+            "target": "OnboardComputer",
+            "kind": "stm",
+            "state": [
+              "cpu_state"
+            ],
+            "input": [
+              "commands"
+            ],
+            "parameters": {
+              "reboot_threshold": 3,
+              "uptime_s": 0
+            },
+            "fault_injection": {
+              "exception_rate": 0.01
+            },
+            "output": [
+              "reboot_count"
+            ]
+          }
+        ],
+        "sensors": [
+          "reboot_count",
+          "cpu_health"
+        ],
+        "time_resolution_ms": 100.0,
+        "duration_s": 86400.0,
+        "scenario_templates": [
+          {
+            "id": "SCN-OBC",
+            "fault": "F-OBC-LOCKUP",
+            "inject_at_s": 1000,
+            "observables": [
+              "reboot_count"
+            ]
+          }
+        ]
+      },
+      "rules": [
+        {
+          "rule_id": "R1",
+          "if": "reboot_count > 3/min",
+          "then": "switch redundant computer"
+        }
+      ],
+      "tags": [
+        "星载计算机",
+        "OBC",
+        "软件",
+        "死锁",
+        "看门狗",
+        "复位"
+      ]
+    },
+    "SPACECRAFT-FAULT-012": {
+      "schema_version": "1.0",
+      "knowledge_type": "ontology+simulation",
+      "id": "SPACECRAFT-FAULT-012",
+      "title": "真实案例:GEO通信卫星业务故障(转发器/轨道保持)",
+      "domain": [
+        "aerospace",
+        "geostationary",
+        "communication-satellite",
+        "business-continuity"
+      ],
+      "created": "2026-10-14",
+      "provenance": {
+        "source": [
+          "AnySearch retrieval"
+        ],
+        "references": [
+          "Impact 1859 superstorm on GEO transponders",
+          "Strategies to recover from SATCOM failures",
+          "Express satellites station-keeping"
+        ],
+        "confidence": "medium"
+      },
+      "ontology": {
+        "namespace": "tianta:aero",
+        "root_class": "SpacecraftComponent",
+        "classes": [
+          {
+            "name": "AttitudeControlSystem",
+            "parent": "SpacecraftComponent",
+            "components": [
+              "ReactionWheel",
+              "MomentumWheel",
+              "StarSensor",
+              "Gyroscope",
+              "Magnetorquer"
+            ]
+          },
+          {
+            "name": "ElectricalPowerSystem",
+            "parent": "SpacecraftComponent",
+            "components": [
+              "SolarArray",
+              "Battery",
+              "PowerController"
+            ]
+          },
+          {
+            "name": "ThermalControlSystem",
+            "parent": "SpacecraftComponent",
+            "components": [
+              "Thermistor",
+              "Heater"
+            ]
+          },
+          {
+            "name": "TelemetryTrackingCommand",
+            "parent": "SpacecraftComponent",
+            "components": [
+              "Transponder",
+              "Transmitter",
+              "Antenna",
+              "Link"
+            ]
+          },
+          {
+            "name": "Payload",
+            "parent": "SpacecraftComponent",
+            "components": [
+              "Instrument"
+            ]
+          },
+          {
+            "name": "CommandAndDataHandling",
+            "parent": "SpacecraftComponent",
+            "components": [
+              "OnboardComputer",
+              "CommandProcessor",
+              "FlightSoftware",
+              "Clock"
+            ]
+          },
+          {
+            "name": "GuidanceNavigationControl",
+            "parent": "SpacecraftComponent",
+            "components": [
+              "InertialReferenceSystem"
+            ]
+          }
+        ],
+        "instances": [],
+        "properties": [],
+        "relations": [
+          {
+            "type": "causes",
+            "from": "transponder_damage",
+            "to": "revenue_loss_broadcast_outage"
+          }
+        ]
+      },
+      "fault_models": [
+        {
+          "fault_id": "F-GEO-TRANSP-NET",
+          "type": [
+            "CommunicationFailure",
+            "BusinessOutage"
+          ],
+          "component": "Transponder",
+          "severity": [
+            "high",
+            "economic"
+          ],
+          "symptom": {
+            "telemetry": [
+              "transponder_channels",
+              "c_ku_band_signal"
+            ],
+            "description": "GEO转发器通道失效/损坏,广播通信中断,业务收入损失"
+          },
+          "cause": {
+            "environmental": [
+              "space_weather",
+              "superstorm_charging",
+              "energetic_electrons"
+            ],
+            "internal": [
+              "aging",
+              "tt_degrades"
+            ]
+          },
+          "recovery": [
+            "spare_transponder_margin",
+            "redundancy",
+            "traffic_reto_route",
+            "fleet_redundancy"
+          ]
+        }
+      ],
+      "simulation": {
+        "state_space": {
+          "states": [
+            "operational",
+            "degraded",
+            "disabled"
+          ],
+          "transitions": {
+            "operational": [
+              "degraded"
+            ],
+            "degraded": [
+              "disabled"
+            ]
+          }
+        },
+        "models": [
+          {
+            "model_id": "MOD-GEO",
+            "target": "Transponder",
+            "kind": "fleet_reliability",
+            "state": [
+              "active_transponders"
+            ],
+            "input": [
+              "age_years"
+            ],
+            "parameters": {
+              "fleet_size": 300.0,
+              "spare_ratio": 0.3
+            },
+            "fault_injection": {
+              "disable_frac": 0.2
+            },
+            "output": [
+              "transponder_channels"
+            ]
+          }
+        ],
+        "sensors": [
+          "transponder_channels"
+        ],
+        "time_resolution_ms": 1000.0,
+        "duration_s": 31536000.0,
+        "scenario_templates": [
+          {
+            "id": "SCN-GEO",
+            "fault": "F-GEO-TRANSP-NET",
+            "inject_at_s": 86400,
+            "observables": [
+              "transponder_channels"
+            ]
+          }
+        ]
+      },
+      "rules": [
+        {
+          "rule_id": "R1",
+          "if": "active_transponders < 70%",
+          "then": "raise fleet redundancy concern"
+        }
+      ],
+      "tags": [
+        "GEO",
+        "通信卫星",
+        "转发器",
+        "业务中断",
+        "在轨服务"
+      ]
+    }
+  },
+  "fault_catalog": [
+    {
+      "fault_id": "F-ACS-WHEEL",
+      "entry": "SPACECRAFT-FAULT-001",
+      "component": "ReactionWheel",
+      "type": "AttitudeControlFailure",
+      "severity": [
+        "critical",
+        "single_point"
+      ]
+    },
+    {
+      "fault_id": "F-EPS-BATTERY",
+      "entry": "SPACECRAFT-FAULT-001",
+      "component": "Battery",
+      "type": "PowerFailure",
+      "severity": "high"
+    },
+    {
+      "fault_id": "F-TCS-THERMISTOR",
+      "entry": "SPACECRAFT-FAULT-001",
+      "component": "Thermistor",
+      "type": "ThermalControlFailure",
+      "severity": "medium"
+    },
+    {
+      "fault_id": "F-TTC-LINK",
+      "entry": "SPACECRAFT-FAULT-001",
+      "component": "Transmitter",
+      "type": "CommunicationFailure",
+      "severity": [
+        "high",
+        "mission_critical"
+      ]
+    },
+    {
+      "fault_id": "F-MCO-NAV-UNIT",
+      "entry": "SPACECRAFT-FAULT-002",
+      "component": "GuidanceNavigationControl",
+      "type": "SoftwareFailure|GroundNavigationError|UnitConversionError",
+      "severity": "catastrophic(mission_lost)"
+    },
+    {
+      "fault_id": "F-HST-FGS-BEARING",
+      "entry": "SPACECRAFT-FAULT-003",
+      "component": "FineGuidanceSensor",
+      "type": "MechanicalBearingFailure|PrecisionMechanismDegradation",
+      "severity": "high(pointing capability)"
+    },
+    {
+      "fault_id": "F-HST-GYRO",
+      "entry": "SPACECRAFT-FAULT-003",
+      "component": "Gyroscope",
+      "type": "RateSensorFailure",
+      "severity": "high"
+    },
+    {
+      "fault_id": "F-GAL-HGA-DEPLOY",
+      "entry": "SPACECRAFT-FAULT-004",
+      "component": "HighGainAntenna",
+      "type": "DeployableMechanismFailure|AntennaDeploymentAnomaly",
+      "severity": "high(data_rate degraded)"
+    },
+    {
+      "fault_id": "F-PROP-THRUSTER",
+      "entry": "SPACECRAFT-FAULT-005",
+      "component": "Thruster",
+      "type": "PropulsionFailure|ThrusterFailure",
+      "severity": "high"
+    },
+    {
+      "fault_id": "F-PROP-HALL",
+      "entry": "SPACECRAFT-FAULT-005",
+      "component": "HallThruster",
+      "type": "ElectricPropulsionFailure",
+      "severity": "medium"
+    },
+    {
+      "fault_id": "F-PWR-SOLAR-DEPLOY",
+      "entry": "SPACECRAFT-FAULT-006",
+      "component": "SolarArray",
+      "type": "PowerFailure|DeploymentFailure",
+      "severity": [
+        "high",
+        "common_cubeSat_failure"
+      ]
+    },
+    {
+      "fault_id": "F-PWR-SOLAR-DEGRADE",
+      "entry": "SPACECRAFT-FAULT-006",
+      "component": "SolarArray",
+      "type": "PowerDegradation",
+      "severity": "medium"
+    },
+    {
+      "fault_id": "F-ENV-SEU",
+      "entry": "SPACECRAFT-FAULT-007",
+      "component": "Memory",
+      "type": "RadiationEffect",
+      "severity": "medium"
+    },
+    {
+      "fault_id": "F-ENV-CHARGING",
+      "entry": "SPACECRAFT-FAULT-007",
+      "component": "Bus",
+      "type": "ElectrostaticEffect",
+      "severity": [
+        "high",
+        "damaging"
+      ]
+    },
+    {
+      "fault_id": "F-ARI501-IRS-SW",
+      "entry": "SPACECRAFT-FAULT-008",
+      "component": "InertialReferenceSystem",
+      "type": "SoftwareFailure|GuidanceFailure",
+      "severity": "catastrophic(launch_failure)"
+    },
+    {
+      "fault_id": "F-APOLLO13-O2TANK",
+      "entry": "SPACECRAFT-FAULT-009",
+      "component": "PropellantTank",
+      "type": "CryogenicFailure|FireExplosion",
+      "severity": "catastrophic(mission abort)"
+    },
+    {
+      "fault_id": "F-TTC-TRANSPONDER",
+      "entry": "SPACECRAFT-FAULT-010",
+      "component": "Transponder",
+      "type": "CommunicationFailure",
+      "severity": "high"
+    },
+    {
+      "fault_id": "F-TTC-ANTENNA",
+      "entry": "SPACECRAFT-FAULT-010",
+      "component": "Antenna",
+      "type": "CommunicationFailure",
+      "severity": "high"
+    },
+    {
+      "fault_id": "F-OBC-LOCKUP",
+      "entry": "SPACECRAFT-FAULT-011",
+      "component": "OnboardComputer",
+      "type": "OnboardComputerFailure",
+      "severity": "high"
+    },
+    {
+      "fault_id": "F-OBC-CLOCK",
+      "entry": "SPACECRAFT-FAULT-011",
+      "component": "CommandAndDataHandling",
+      "type": "TimingFault",
+      "severity": "medium"
+    },
+    {
+      "fault_id": "F-GEO-TRANSP-NET",
+      "entry": "SPACECRAFT-FAULT-012",
+      "component": "Transponder",
+      "type": "CommunicationFailure|BusinessOutage",
+      "severity": [
+        "high",
+        "economic"
+      ]
+    }
+  ],
+  "simulation": {
+    "models": [
+      {
+        "model_id": "MOD-WHEEL",
+        "target": "ReactionWheel",
+        "kind": "first_order_kinetics",
+        "state": [
+          "speed"
+        ],
+        "input": [
+          "torque_command"
+        ],
+        "parameters": {
+          "motor_gain_K": 1.0,
+          "time_const_tau_ms": 100.0,
+          "friction_coeff": 0.02
+        },
+        "fault_injection": {
+          "efficiency_degradation": 0.7,
+          "precision_error_rpm": 5.0
+        },
+        "output": [
+          "wheel_speed",
+          "motor_current"
+        ],
+        "entry": "SPACECRAFT-FAULT-001"
+      },
+      {
+        "model_id": "MOD-BATT",
+        "target": "Battery",
+        "kind": "rc_equivalent_circuit",
+        "state": [
+          "soc",
+          "bus_voltage"
+        ],
+        "input": [
+          "charge_current",
+          "load"
+        ],
+        "parameters": {
+          "capacity_Ah": 30.0,
+          "open_circuit_voltage_V": 28.0
+        },
+        "fault_injection": {
+          "capacity_fade_percent": 0.2,
+          "overcharge_threshold_soc": 0.99
+        },
+        "output": [
+          "bus_voltage",
+          "battery_soc"
+        ],
+        "entry": "SPACECRAFT-FAULT-001"
+      },
+      {
+        "model_id": "MOD-THERM",
+        "target": "ThermalControlSystem",
+        "kind": "thermal_lumped",
+        "state": [
+          "temperature"
+        ],
+        "input": [
+          "heat_load",
+          "heater_power"
+        ],
+        "parameters": {
+          "thermal_mass_J_K": 500.0,
+          "radiance_coeff": 0.05
+        },
+        "fault_injection": {
+          "sensor_bias_degC": 10.0,
+          "heater_off": true
+        },
+        "output": [
+          "temperature",
+          "temperature_derivative"
+        ],
+        "entry": "SPACECRAFT-FAULT-001"
+      },
+      {
+        "model_id": "MOD-MCO-TRAJ",
+        "target": "GuidanceNavigationControl",
+        "kind": "orbital_propagator",
+        "state": [
+          "altitude",
+          "velocity"
+        ],
+        "input": [
+          "thruster_impulse"
+        ],
+        "parameters": {
+          "thruster_impulse_units": "libf-s_incorrect",
+          "scale_factor_error": 4.45
+        },
+        "fault_injection": {
+          "unit_scale_error_factor": 4.45,
+          "periapsis_error_km": -90.0
+        },
+        "output": [
+          "trajectory_altitude"
+        ],
+        "entry": "SPACECRAFT-FAULT-002"
+      },
+      {
+        "model_id": "MOD-HST-BRG",
+        "target": "FineGuidanceSensor",
+        "kind": "bearing_life_model",
+        "state": [
+          "bearing_torque",
+          "wear_cycles"
+        ],
+        "input": [
+          "coarse_track_duty"
+        ],
+        "parameters": {
+          "cycles_to_stall": 20000000.0,
+          "stall_torque_Nm": 0.02
+        },
+        "fault_injection": {
+          "duty_cycle": 1.0,
+          "time_to_stall_cycles": 20000000.0
+        },
+        "output": [
+          "bearing_torque"
+        ],
+        "entry": "SPACECRAFT-FAULT-003"
+      },
+      {
+        "model_id": "MOD-GAL-HGA",
+        "target": "HighGainAntenna",
+        "kind": "deployment_kinetics",
+        "state": [
+          "antenna_deployed_angle"
+        ],
+        "input": [
+          "deployment_command"
+        ],
+        "parameters": {
+          "deployment_force_N": 100.0,
+          "stiction_N": 150.0
+        },
+        "fault_injection": {
+          "binding_force_factor": 1.5,
+          "stuck_angle_deg": 15.0
+        },
+        "output": [
+          "antenna_deployed_angle"
+        ],
+        "entry": "SPACECRAFT-FAULT-004"
+      },
+      {
+        "model_id": "MOD-PROP",
+        "target": "Thruster",
+        "kind": "impulse_model",
+        "state": [
+          "orbital_velocity"
+        ],
+        "input": [
+          "thruster_command"
+        ],
+        "parameters": {
+          "thrust_N": 0.05,
+          "isp": 300
+        },
+        "fault_injection": {
+          "thrust_factor": 0.5
+        },
+        "output": [
+          "thruster_impulse"
+        ],
+        "entry": "SPACECRAFT-FAULT-005"
+      },
+      {
+        "model_id": "MOD-SOLAR",
+        "target": "SolarArray",
+        "kind": "deployment+power",
+        "state": [
+          "deployed_angle",
+          "power_out"
+        ],
+        "input": [
+          "deployment_command"
+        ],
+        "parameters": {
+          "deployment_force_N": 50.0,
+          "cell_efficiency": 0.3
+        },
+        "fault_injection": {
+          "stuck_angle_deg": 10.0,
+          "power_factor": 0.1
+        },
+        "output": [
+          "solar_array_power"
+        ],
+        "entry": "SPACECRAFT-FAULT-006"
+      },
+      {
+        "model_id": "MOD-SEU",
+        "target": "Memory",
+        "kind": "upset_rate_model",
+        "state": [
+          "error_count"
+        ],
+        "input": [
+          "radiation_flux"
+        ],
+        "parameters": {
+          "critical_charge_pC": 0.01,
+          "upset_rate_per_day": 0.5
+        },
+        "fault_injection": {
+          "upt_set_rate_x10": 10.0
+        },
+        "output": [
+          "memory_error"
+        ],
+        "entry": "SPACECRAFT-FAULT-007"
+      },
+      {
+        "model_id": "MOD-ARI-IRS",
+        "target": "InertialReferenceSystem",
+        "kind": "velocity_overflow",
+        "state": [
+          "horizontal_velocity"
+        ],
+        "input": [
+          "time"
+        ],
+        "parameters": {
+          "overflow_threshold": 65535.0,
+          "t_overflow_s": 37
+        },
+        "fault_injection": {
+          "velocity_factor": 1.0
+        },
+        "output": [
+          "guidance_data"
+        ],
+        "entry": "SPACECRAFT-FAULT-008"
+      },
+      {
+        "model_id": "MOD-APOLLO-O2",
+        "target": "PropellantTank",
+        "kind": "pressure_thermal",
+        "state": [
+          "tank_pressure",
+          "tank_temp"
+        ],
+        "input": [
+          "heater_power"
+        ],
+        "parameters": {
+          "critical_pressure_psi": 1000.0
+        },
+        "fault_injection": {
+          "heater_stuck_on": true,
+          "ignition_temp_K": 500.0
+        },
+        "output": [
+          "tank_pressure"
+        ],
+        "entry": "SPACECRAFT-FAULT-009"
+      },
+      {
+        "model_id": "MOD-TTC",
+        "target": "Transponder",
+        "kind": "link_budget",
+        "state": [
+          "link_signal"
+        ],
+        "input": [
+          "power"
+        ],
+        "parameters": {
+          "tx_power_W": 50.0,
+          "antenna_gain_dbi": 30
+        },
+        "fault_injection": {
+          "power_factor": 0.1,
+          "noise_temp_K": 1000
+        },
+        "output": [
+          "link_signal"
+        ],
+        "entry": "SPACECRAFT-FAULT-010"
+      },
+      {
+        "model_id": "MOD-OBC",
+        "target": "OnboardComputer",
+        "kind": "stm",
+        "state": [
+          "cpu_state"
+        ],
+        "input": [
+          "commands"
+        ],
+        "parameters": {
+          "reboot_threshold": 3,
+          "uptime_s": 0
+        },
+        "fault_injection": {
+          "exception_rate": 0.01
+        },
+        "output": [
+          "reboot_count"
+        ],
+        "entry": "SPACECRAFT-FAULT-011"
+      },
+      {
+        "model_id": "MOD-GEO",
+        "target": "Transponder",
+        "kind": "fleet_reliability",
+        "state": [
+          "active_transponders"
+        ],
+        "input": [
+          "age_years"
+        ],
+        "parameters": {
+          "fleet_size": 300.0,
+          "spare_ratio": 0.3
+        },
+        "fault_injection": {
+          "disable_frac": 0.2
+        },
+        "output": [
+          "transponder_channels"
+        ],
+        "entry": "SPACECRAFT-FAULT-012"
+      }
+    ],
+    "scenarios": [
+      {
+        "id": "SCN-WHEEL-DEGRADE",
+        "fault": "F-ACS-WHEEL",
+        "inject_at_s": 600,
+        "observables": [
+          "wheel_speed_error",
+          "motor_current"
+        ],
+        "entry": "SPACECRAFT-FAULT-001"
+      },
+      {
+        "id": "SCN-BATT-OVERCHARGE",
+        "fault": "F-EPS-BATTERY",
+        "inject_at_s": 300,
+        "observables": [
+          "bus_voltage",
+          "battery_soc"
+        ],
+        "entry": "SPACECRAFT-FAULT-001"
+      },
+      {
+        "id": "SCN-THERM-DRIFT",
+        "fault": "F-TCS-THERMISTOR",
+        "inject_at_s": 900,
+        "observables": [
+          "temperature"
+        ],
+        "entry": "SPACECRAFT-FAULT-001"
+      },
+      {
+        "id": "SCN-MCO-UNIT",
+        "fault": "F-MCO-NAV-UNIT",
+        "inject_at_s": 600,
+        "observables": [
+          "trajectory_altitude"
+        ],
+        "entry": "SPACECRAFT-FAULT-002"
+      },
+      {
+        "id": "SCN-HST-BRG",
+        "fault": "F-HST-FGS-BEARING",
+        "inject_at_s": 50000,
+        "observables": [
+          "bearing_torque"
+        ],
+        "entry": "SPACECRAFT-FAULT-003"
+      },
+      {
+        "id": "SCN-GAL-HGA",
+        "fault": "F-GAL-HGA-DEPLOY",
+        "inject_at_s": 300,
+        "observables": [
+          "antenna_deployed_angle"
+        ],
+        "entry": "SPACECRAFT-FAULT-004"
+      },
+      {
+        "id": "SCN-PROP",
+        "fault": "F-PROP-THRUSTER",
+        "inject_at_s": 600,
+        "observables": [
+          "thruster_impulse"
+        ],
+        "entry": "SPACECRAFT-FAULT-005"
+      },
+      {
+        "id": "SCN-SOLAR",
+        "fault": "F-PWR-SOLAR-DEPLOY",
+        "inject_at_s": 300,
+        "observables": [
+          "solar_array_power"
+        ],
+        "entry": "SPACECRAFT-FAULT-006"
+      },
+      {
+        "id": "SCN-SEU",
+        "fault": "F-ENV-SEU",
+        "inject_at_s": 3600,
+        "observables": [
+          "memory_error"
+        ],
+        "entry": "SPACECRAFT-FAULT-007"
+      },
+      {
+        "id": "SCN-ARI501",
+        "fault": "F-ARI501-IRS-SW",
+        "inject_at_s": 37,
+        "observables": [
+          "guidance_data"
+        ],
+        "entry": "SPACECRAFT-FAULT-008"
+      },
+      {
+        "id": "SCN-APOLLO13",
+        "fault": "F-APOLLO13-O2TANK",
+        "inject_at_s": 300,
+        "observables": [
+          "tank_pressure"
+        ],
+        "entry": "SPACECRAFT-FAULT-009"
+      },
+      {
+        "id": "SCN-TTC",
+        "fault": "F-TTC-TRANSPONDER",
+        "inject_at_s": 600,
+        "observables": [
+          "link_signal"
+        ],
+        "entry": "SPACECRAFT-FAULT-010"
+      },
+      {
+        "id": "SCN-OBC",
+        "fault": "F-OBC-LOCKUP",
+        "inject_at_s": 1000,
+        "observables": [
+          "reboot_count"
+        ],
+        "entry": "SPACECRAFT-FAULT-011"
+      },
+      {
+        "id": "SCN-GEO",
+        "fault": "F-GEO-TRANSP-NET",
+        "inject_at_s": 86400,
+        "observables": [
+          "transponder_channels"
+        ],
+        "entry": "SPACECRAFT-FAULT-012"
+      }
+    ]
+  },
+  "cross_references": [],
+  "tags": [
+    "卫星故障",
+    "航天器故障",
+    "知识库",
+    "本体",
+    "仿真",
+    "真实案例",
+    "FDIR",
+    "空间环境",
+    "测控"
+  ]
+}

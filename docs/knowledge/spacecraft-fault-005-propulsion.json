@@ -1,0 +1,246 @@
+{
+  "schema_version": "1.0",
+  "knowledge_type": "ontology+simulation",
+  "id": "SPACECRAFT-FAULT-005",
+  "title": "推进子系统故障(通用 + 电推进)",
+  "domain": [
+    "aerospace",
+    "propulsion",
+    "thruster"
+  ],
+  "created": "2026-10-14",
+  "provenance": {
+    "source": [
+      "AnySearch retrieval"
+    ],
+    "references": [
+      "Acta Astronautica 2019 station-keeping with electric propulsion failure modes",
+      "Electric propulsion for small satellites (IOP),Hall Thruster on Express (2007)"
+    ],
+    "confidence": "high"
+  },
+  "ontology": {
+    "namespace": "tianta:aero",
+    "root_class": "SpacecraftComponent",
+    "classes": [
+      {
+        "name": "AttitudeControlSystem",
+        "parent": "SpacecraftComponent",
+        "components": [
+          "ReactionWheel",
+          "MomentumWheel",
+          "StarSensor",
+          "Gyroscope",
+          "FineGuidanceSensor",
+          "Magnetorquer"
+        ]
+      },
+      {
+        "name": "ElectricalPowerSystem",
+        "parent": "SpacecraftComponent",
+        "components": [
+          "SolarArray",
+          "Battery",
+          "PowerController",
+          "Bus"
+        ]
+      },
+      {
+        "name": "ThermalControlSystem",
+        "parent": "SpacecraftComponent",
+        "components": [
+          "Thermistor",
+          "Heater",
+          "Radiator",
+          "OSR"
+        ]
+      },
+      {
+        "name": "TelemetryTrackingCommand",
+        "parent": "SpacecraftComponent",
+        "components": [
+          "Transponder",
+          "Transmitter",
+          "HighGainAntenna",
+          "Antenna"
+        ]
+      },
+      {
+        "name": "Payload",
+        "parent": "SpacecraftComponent",
+        "components": [
+          "Instrument",
+          "ScienceDataLink"
+        ]
+      },
+      {
+        "name": "CommandAndDataHandling",
+        "parent": "SpacecraftComponent",
+        "components": [
+          "OnboardComputer",
+          "CommandProcessor",
+          "FlightSoftware",
+          "Memory"
+        ]
+      },
+      {
+        "name": "Propulsion",
+        "parent": "SpacecraftComponent",
+        "components": [
+          "Thruster",
+          "HallThruster",
+          "PropellantTank",
+          "Valve"
+        ]
+      },
+      {
+        "name": "GuidanceNavigationControl",
+        "parent": "SpacecraftComponent",
+        "components": [
+          "InertialReferenceSystem",
+          "InertialNavigation",
+          "GroundNavigation"
+        ]
+      }
+    ],
+    "instances": [
+      {
+        "id": "INST-THRUST1",
+        "class": "Thruster",
+        "role": "station_keeping"
+      }
+    ],
+    "properties": [],
+    "relations": [
+      {
+        "type": "causes",
+        "from": "thruster_impulse_failure",
+        "to": "orbit_error"
+      }
+    ]
+  },
+  "fault_models": [
+    {
+      "fault_id": "F-PROP-THRUSTER",
+      "type": [
+        "PropulsionFailure",
+        "ThrusterFailure"
+      ],
+      "component": "Thruster",
+      "severity": "high",
+      "symptom": {
+        "telemetry": [
+          "thruster_impulse",
+          "orbit"
+        ],
+        "description": "推力/冲量异常,轨道保持失败,推进剂压力异常"
+      },
+      "cause": {
+        "internal": [
+          "valve_failure",
+          "thruster_wear",
+          "propellant_tank_pressure"
+        ],
+        "environmental": []
+      },
+      "recovery": [
+        "redundant_thruster_switch",
+        "propellant_pressure_manage",
+        "station_keeping_replan"
+      ]
+    },
+    {
+      "fault_id": "F-PROP-HALL",
+      "type": "ElectricPropulsionFailure",
+      "component": "HallThruster",
+      "severity": "medium",
+      "symptom": {
+        "telemetry": [
+          "ion_current",
+          "thrust"
+        ],
+        "description": "电推进羽流/离子电流异常,推力下降"
+      },
+      "cause": {
+        "internal": [
+          "cathode_degradation"
+        ],
+        "environmental": []
+      },
+      "recovery": [
+        "thruster_switch",
+        "reduced_thrust_mode"
+      ]
+    }
+  ],
+  "simulation": {
+    "state_space": {
+      "states": [
+        "nominal",
+        "degraded",
+        "failed"
+      ],
+      "transitions": {
+        "nominal": [
+          "degraded"
+        ],
+        "degraded": [
+          "failed"
+        ]
+      }
+    },
+    "models": [
+      {
+        "model_id": "MOD-PROP",
+        "target": "Thruster",
+        "kind": "impulse_model",
+        "state": [
+          "orbital_velocity"
+        ],
+        "input": [
+          "thruster_command"
+        ],
+        "parameters": {
+          "thrust_N": 0.05,
+          "isp": 300
+        },
+        "fault_injection": {
+          "thrust_factor": 0.5
+        },
+        "output": [
+          "thruster_impulse"
+        ]
+      }
+    ],
+    "sensors": [
+      "thruster_impulse",
+      "ion_current"
+    ],
+    "time_resolution_ms": 100.0,
+    "duration_s": 3600.0,
+    "scenario_templates": [
+      {
+        "id": "SCN-PROP",
+        "fault": "F-PROP-THRUSTER",
+        "inject_at_s": 600,
+        "observables": [
+          "thruster_impulse"
+        ]
+      }
+    ]
+  },
+  "rules": [
+    {
+      "rule_id": "R1",
+      "if": "thruster_impulse < 50% nominal",
+      "then": "switch redundant thruster"
+    }
+  ],
+  "tags": [
+    "推进",
+    "电推进",
+    "霍尔推力器",
+    "推力器故障",
+    "轨道保持"
+  ]
+}

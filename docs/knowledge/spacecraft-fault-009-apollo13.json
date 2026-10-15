@@ -1,0 +1,241 @@
+{
+  "schema_version": "1.0",
+  "knowledge_type": "ontology+simulation",
+  "id": "SPACECRAFT-FAULT-009",
+  "title": "真实案例:Apollo 13(1970)氧气罐爆炸",
+  "domain": [
+    "aerospace",
+    "crewed-mission",
+    "cryogenic",
+    "electrical"
+  ],
+  "created": "2026-10-14",
+  "provenance": {
+    "source": [
+      "AnySearch retrieval"
+    ],
+    "references": [
+      "NASA Apollo 13 Review Board Report (TMX-65270)",
+      "Apollo Lesson Sampler: Apollo 13",
+      "Apollo 13 Mission Report"
+    ],
+    "confidence": "high",
+    "mission": {
+      "name": "Apollo 13",
+      "agency": "NASA",
+      "failure_date": "1970-04-13"
+    }
+  },
+  "ontology": {
+    "namespace": "tianta:aero",
+    "root_class": "SpacecraftComponent",
+    "classes": [
+      {
+        "name": "AttitudeControlSystem",
+        "parent": "SpacecraftComponent",
+        "components": [
+          "ReactionWheel",
+          "MomentumWheel",
+          "StarSensor",
+          "Gyroscope",
+          "FineGuidanceSensor",
+          "Magnetorquer"
+        ]
+      },
+      {
+        "name": "ElectricalPowerSystem",
+        "parent": "SpacecraftComponent",
+        "components": [
+          "SolarArray",
+          "Battery",
+          "PowerController",
+          "Bus"
+        ]
+      },
+      {
+        "name": "ThermalControlSystem",
+        "parent": "SpacecraftComponent",
+        "components": [
+          "Thermistor",
+          "Heater",
+          "Radiator",
+          "OSR"
+        ]
+      },
+      {
+        "name": "TelemetryTrackingCommand",
+        "parent": "SpacecraftComponent",
+        "components": [
+          "Transponder",
+          "Transmitter",
+          "HighGainAntenna",
+          "Antenna"
+        ]
+      },
+      {
+        "name": "Payload",
+        "parent": "SpacecraftComponent",
+        "components": [
+          "Instrument",
+          "ScienceDataLink"
+        ]
+      },
+      {
+        "name": "CommandAndDataHandling",
+        "parent": "SpacecraftComponent",
+        "components": [
+          "OnboardComputer",
+          "CommandProcessor",
+          "FlightSoftware",
+          "Memory"
+        ]
+      },
+      {
+        "name": "Propulsion",
+        "parent": "SpacecraftComponent",
+        "components": [
+          "Thruster",
+          "HallThruster",
+          "PropellantTank",
+          "Valve"
+        ]
+      },
+      {
+        "name": "GuidanceNavigationControl",
+        "parent": "SpacecraftComponent",
+        "components": [
+          "InertialReferenceSystem",
+          "InertialNavigation",
+          "GroundNavigation"
+        ]
+      }
+    ],
+    "instances": [
+      {
+        "id": "INST-O2TANK2",
+        "class": "PropellantTank",
+        "role": "cryogenic_oxygen"
+      }
+    ],
+    "properties": [],
+    "relations": [
+      {
+        "type": "causes",
+        "from": "tank_fire",
+        "to": "loss_oxygen_power"
+      }
+    ]
+  },
+  "fault_models": [
+    {
+      "fault_id": "F-APOLLO13-O2TANK",
+      "type": [
+        "CryogenicFailure",
+        "FireExplosion"
+      ],
+      "component": "PropellantTank",
+      "severity": "catastrophic(mission abort)",
+      "symptom": {
+        "telemetry": [
+          "tank_pressure",
+          "power",
+          "oxygen"
+        ],
+        "description": "约56小时服务舱氧气罐#2起火爆炸,失去氧气与电力,任务中止,利用登月舱氧气/电力返回"
+      },
+      "cause": {
+        "internal": [
+          "tank_overheating_from_heater",
+          "manuf_tank_processing_history",
+          "teflon_wiring_insulation_under_heated_tank"
+        ],
+        "environmental": []
+      },
+      "recovery": [
+        "lunar_module_as_lifeboat",
+        "power_off_nonessential",
+        "manual_trajectory",
+        "successful_entry"
+      ]
+    }
+  ],
+  "simulation": {
+    "state_space": {
+      "states": [
+        "ok",
+        "overheat",
+        "fire"
+      ],
+      "transitions": {
+        "ok": [
+          "overheat"
+        ],
+        "overheat": [
+          "fire"
+        ]
+      }
+    },
+    "models": [
+      {
+        "model_id": "MOD-APOLLO-O2",
+        "target": "PropellantTank",
+        "kind": "pressure_thermal",
+        "state": [
+          "tank_pressure",
+          "tank_temp"
+        ],
+        "input": [
+          "heater_power"
+        ],
+        "parameters": {
+          "critical_pressure_psi": 1000.0
+        },
+        "fault_injection": {
+          "heater_stuck_on": true,
+          "ignition_temp_K": 500.0
+        },
+        "output": [
+          "tank_pressure"
+        ]
+      }
+    ],
+    "sensors": [
+      "tank_pressure",
+      "power",
+      "oxygen"
+    ],
+    "time_resolution_ms": 1000.0,
+    "duration_s": 86400.0,
+    "scenario_templates": [
+      {
+        "id": "SCN-APOLLO13",
+        "fault": "F-APOLLO13-O2TANK",
+        "inject_at_s": 300,
+        "observables": [
+          "tank_pressure"
+        ]
+      }
+    ]
+  },
+  "rules": [
+    {
+      "rule_id": "R1",
+      "if": "tank_temp > ignition_temp",
+      "then": "emergency, isolate tank"
+    },
+    {
+      "rule_id": "R2",
+      "if": "oxygen lost",
+      "then": "switch to lunar module lifeboat"
+    }
+  ],
+  "tags": [
+    "真实案例",
+    "Apollo13",
+    "氧气罐",
+    "低温",
+    "爆炸",
+    "1970",
+    "载人"
+  ]
+}

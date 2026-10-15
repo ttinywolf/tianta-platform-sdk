@@ -1,0 +1,235 @@
+{
+  "schema_version": "1.0",
+  "knowledge_type": "ontology+simulation",
+  "id": "SPACECRAFT-FAULT-008",
+  "title": "真实案例:Ariane 5 Flight 501(1996)火箭制导失效",
+  "domain": [
+    "aerospace",
+    "launcher",
+    "software",
+    "inertial-navigation"
+  ],
+  "created": "2026-10-14",
+  "provenance": {
+    "source": [
+      "AnySearch retrieval"
+    ],
+    "references": [
+      "ESA Ariane 501 Inquiry Board report",
+      "Ariane 5 Flight 501 analysis",
+      "Ariane flight V88 reused-code failure"
+    ],
+    "confidence": "high",
+    "mission": {
+      "name": "Ariane 5 Flight 501",
+      "company": "ESA/CNES/Arianespace",
+      "failure_date": "1996-06-04"
+    }
+  },
+  "ontology": {
+    "namespace": "tianta:aero",
+    "root_class": "SpacecraftComponent",
+    "classes": [
+      {
+        "name": "AttitudeControlSystem",
+        "parent": "SpacecraftComponent",
+        "components": [
+          "ReactionWheel",
+          "MomentumWheel",
+          "StarSensor",
+          "Gyroscope",
+          "FineGuidanceSensor",
+          "Magnetorquer"
+        ]
+      },
+      {
+        "name": "ElectricalPowerSystem",
+        "parent": "SpacecraftComponent",
+        "components": [
+          "SolarArray",
+          "Battery",
+          "PowerController",
+          "Bus"
+        ]
+      },
+      {
+        "name": "ThermalControlSystem",
+        "parent": "SpacecraftComponent",
+        "components": [
+          "Thermistor",
+          "Heater",
+          "Radiator",
+          "OSR"
+        ]
+      },
+      {
+        "name": "TelemetryTrackingCommand",
+        "parent": "SpacecraftComponent",
+        "components": [
+          "Transponder",
+          "Transmitter",
+          "HighGainAntenna",
+          "Antenna"
+        ]
+      },
+      {
+        "name": "Payload",
+        "parent": "SpacecraftComponent",
+        "components": [
+          "Instrument",
+          "ScienceDataLink"
+        ]
+      },
+      {
+        "name": "CommandAndDataHandling",
+        "parent": "SpacecraftComponent",
+        "components": [
+          "OnboardComputer",
+          "CommandProcessor",
+          "FlightSoftware",
+          "Memory"
+        ]
+      },
+      {
+        "name": "Propulsion",
+        "parent": "SpacecraftComponent",
+        "components": [
+          "Thruster",
+          "HallThruster",
+          "PropellantTank",
+          "Valve"
+        ]
+      },
+      {
+        "name": "GuidanceNavigationControl",
+        "parent": "SpacecraftComponent",
+        "components": [
+          "InertialReferenceSystem",
+          "InertialNavigation",
+          "GroundNavigation"
+        ]
+      }
+    ],
+    "instances": [
+      {
+        "id": "INST-IRS1",
+        "class": "InertialReferenceSystem",
+        "role": "guidance"
+      }
+    ],
+    "properties": [],
+    "relations": [
+      {
+        "type": "causes",
+        "from": "irs_software_horizontal_velocity_overflow",
+        "to": "loss_guidance_attitude"
+      },
+      {
+        "type": "causes",
+        "from": "loss_guidance",
+        "to": "launch_deviated"
+      }
+    ]
+  },
+  "fault_models": [
+    {
+      "fault_id": "F-ARI501-IRS-SW",
+      "type": [
+        "SoftwareFailure",
+        "GuidanceFailure"
+      ],
+      "component": "InertialReferenceSystem",
+      "severity": "catastrophic(launch_failure)",
+      "symptom": {
+        "telemetry": [
+          "guidance_data"
+        ],
+        "description": "主发动机点火后37秒失去全部制导与姿态信息(升空30秒),运载火箭偏离,自毁"
+      },
+      "cause": {
+        "internal": [
+          "horizontal_velocity_64bit_overflow_in_ada",
+          "reused_flight_code_without_revalidation",
+          "unnecessary_routine_running_during_flight"
+        ]
+      },
+      "recovery": [
+        "disable_alignment_after_lift_off",
+        "no_unneeded_sw_during_flight",
+        "revalidate_reused_code",
+        "inquiry_board"
+      ]
+    }
+  ],
+  "simulation": {
+    "state_space": {
+      "states": [
+        "ok",
+        "overflow",
+        "loss_guidance"
+      ],
+      "transitions": {
+        "ok": [
+          "overflow"
+        ],
+        "overflow": [
+          "loss_guidance"
+        ]
+      }
+    },
+    "models": [
+      {
+        "model_id": "MOD-ARI-IRS",
+        "target": "InertialReferenceSystem",
+        "kind": "velocity_overflow",
+        "state": [
+          "horizontal_velocity"
+        ],
+        "input": [
+          "time"
+        ],
+        "parameters": {
+          "overflow_threshold": 65535.0,
+          "t_overflow_s": 37
+        },
+        "fault_injection": {
+          "velocity_factor": 1.0
+        },
+        "output": [
+          "guidance_data"
+        ]
+      }
+    ],
+    "sensors": [
+      "guidance_data"
+    ],
+    "time_resolution_ms": 100.0,
+    "duration_s": 120.0,
+    "scenario_templates": [
+      {
+        "id": "SCN-ARI501",
+        "fault": "F-ARI501-IRS-SW",
+        "inject_at_s": 37,
+        "observables": [
+          "guidance_data"
+        ]
+      }
+    ]
+  },
+  "rules": [
+    {
+      "rule_id": "R1",
+      "if": "velocity > overflow_threshold",
+      "then": "flag overflow, guidance degraded"
+    }
+  ],
+  "tags": [
+    "真实案例",
+    "Ariane5",
+    "501",
+    "软件缺陷",
+    "惯导",
+    "1996",
+    "整型溢出"
+  ]
+}

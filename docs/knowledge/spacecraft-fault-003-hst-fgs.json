@@ -1,0 +1,310 @@
+{
+  "schema_version": "1.0",
+  "knowledge_type": "ontology+simulation",
+  "id": "SPACECRAFT-FAULT-003",
+  "title": "真实案例:Hubble Space Telescope 细导星敏感器(FGS)轴承异常",
+  "domain": [
+    "aerospace",
+    "attitude-control",
+    "precision-mechanism",
+    "servo-bearing"
+  ],
+  "created": "2026-10-14",
+  "provenance": {
+    "source": [
+      "AnySearch multi-domain retrieval",
+      "NASA GSFC FGS bearing report"
+    ],
+    "references": [
+      "NASA NTRS: Space Telescope Fine Guidance Sensor Bearing Anomaly (1996)",
+      "The Hubble Space Telescope Servicing Mission (Cambridge 1993)",
+      "Hubble Servicing Mission 3A Media Reference Guide"
+    ],
+    "confidence": "high",
+    "mission": {
+      "name": "Hubble Space Telescope (HST)",
+      "agency": "NASA/ESA",
+      "launch": "1990-04-24",
+      "failure_observed": "1993-1997"
+    }
+  },
+  "ontology": {
+    "namespace": "tianta:aero",
+    "root_class": "SpacecraftComponent",
+    "classes": [
+      {
+        "name": "AttitudeControlSystem",
+        "parent": "SpacecraftComponent",
+        "components": [
+          "ReactionWheel",
+          "MomentumWheel",
+          "StarSensor",
+          "Gyroscope",
+          "FineGuidanceSensor",
+          "Magnetorquer"
+        ]
+      },
+      {
+        "name": "ElectricalPowerSystem",
+        "parent": "SpacecraftComponent",
+        "components": [
+          "SolarArray",
+          "Battery",
+          "PowerController",
+          "Bus"
+        ]
+      },
+      {
+        "name": "GuidanceNavigationControl",
+        "parent": "SpacecraftComponent",
+        "components": [
+          "InertialNavigation",
+          "ThrusterFiringModel",
+          "GroundNavigation",
+          "FlightSoftware"
+        ]
+      },
+      {
+        "name": "TelemetryTrackingCommand",
+        "parent": "SpacecraftComponent",
+        "components": [
+          "HighGainAntenna",
+          "LowGainAntenna",
+          "Transmitter",
+          "Link"
+        ]
+      },
+      {
+        "name": "OpticalSystem",
+        "parent": "SpacecraftComponent",
+        "components": [
+          "PrimaryMirror",
+          "PointSpreadFunction",
+          "Detector"
+        ]
+      },
+      {
+        "name": "CommandAndDataHandling",
+        "parent": "SpacecraftComponent",
+        "components": [
+          "OnboardComputer",
+          "CommandProcessor"
+        ]
+      },
+      {
+        "name": "Propulsion",
+        "parent": "SpacecraftComponent",
+        "components": [
+          "Thruster",
+          "PropellantTank"
+        ]
+      }
+    ],
+    "instances": [
+      {
+        "id": "INST-HST-FGS1",
+        "class": "FineGuidanceSensor",
+        "role": "pointing_reference"
+      },
+      {
+        "id": "INST-HST-RSU",
+        "class": "Gyroscope",
+        "role": "rate_sensing"
+      }
+    ],
+    "properties": [
+      {
+        "name": "trajectory_altitude",
+        "domain": "GuidanceNavigationControl",
+        "range": "km",
+        "observable": true
+      },
+      {
+        "name": "angular_velocity",
+        "domain": "AttitudeControlSystem",
+        "range": "deg/s",
+        "observable": true
+      },
+      {
+        "name": "thruster_impulse",
+        "domain": "Propulsion",
+        "range": "Ns",
+        "observable": true
+      },
+      {
+        "name": "bearing_torque",
+        "domain": "FineGuidanceSensor",
+        "range": "Nm",
+        "observable": true
+      },
+      {
+        "name": "antenna_deployed_angle",
+        "domain": "HighGainAntenna",
+        "range": "deg",
+        "observable": true
+      },
+      {
+        "name": "psf_concentration",
+        "domain": "OpticalSystem",
+        "range": "ratio",
+        "observable": true
+      }
+    ],
+    "relations": [
+      {
+        "type": "causes",
+        "from": "bearing_degradation_coarse_track",
+        "to": "stall_torque"
+      },
+      {
+        "type": "mitigated_by",
+        "fault": "bearing_anomaly",
+        "action": "reduce_coarse_track_operation"
+      },
+      {
+        "type": "mitigated_by",
+        "fault": "bearing_anomaly",
+        "action": "orbital_replacement_unit_swap"
+      }
+    ]
+  },
+  "fault_models": [
+    {
+      "fault_id": "F-HST-FGS-BEARING",
+      "type": [
+        "MechanicalBearingFailure",
+        "PrecisionMechanismDegradation"
+      ],
+      "component": "FineGuidanceSensor",
+      "severity": "high(pointing capability)",
+      "symptom": {
+        "telemetry": [
+          "bearing_torque"
+        ],
+        "description": "FGS 伺服电机多次达到堵转(stall)扭矩,轴承磨损加速,指向保持能力下降"
+      },
+      "cause": {
+        "internal": [
+          "bearing_rocking_degrades_race",
+          "coarse_track_operation",
+          "servo_motor_stall"
+        ],
+        "environmental": [
+          "thermal",
+          "vacuum_lubrication_loss"
+        ]
+      },
+      "recovery": [
+        "reduce_coarse_track_duty_in_fsw",
+        "accelerated_life_test",
+        "scheduled_fgs_replacement_sm2",
+        "orbital_replacement_unit"
+      ],
+      "mechanism": "小角度摇摆运动(Coarse Track)加速轴承磨损,约2000万次循环达到饱和扭矩,与地面寿命试验一致。"
+    },
+    {
+      "fault_id": "F-HST-GYRO",
+      "type": "RateSensorFailure",
+      "component": "Gyroscope",
+      "severity": "high",
+      "symptom": {
+        "telemetry": [
+          "angular_velocity",
+          "gyro_drift"
+        ],
+        "description": "陀螺老化失效,姿态确定能力下降"
+      },
+      "cause": {
+        "internal": [
+          "bearing_wear"
+        ],
+        "environmental": [
+          "life_consumption"
+        ]
+      },
+      "recovery": [
+        "replace_all_six_gyros_sm3a",
+        "servicing_mission"
+      ]
+    }
+  ],
+  "simulation": {
+    "state_space": {
+      "states": [
+        "nominal",
+        "degraded",
+        "stall"
+      ],
+      "transitions": {
+        "nominal": [
+          "degraded"
+        ],
+        "degraded": [
+          "stall"
+        ]
+      }
+    },
+    "models": [
+      {
+        "model_id": "MOD-HST-BRG",
+        "target": "FineGuidanceSensor",
+        "kind": "bearing_life_model",
+        "state": [
+          "bearing_torque",
+          "wear_cycles"
+        ],
+        "input": [
+          "coarse_track_duty"
+        ],
+        "parameters": {
+          "cycles_to_stall": 20000000.0,
+          "stall_torque_Nm": 0.02
+        },
+        "fault_injection": {
+          "duty_cycle": 1.0,
+          "time_to_stall_cycles": 20000000.0
+        },
+        "output": [
+          "bearing_torque"
+        ]
+      }
+    ],
+    "sensors": [
+      "bearing_torque",
+      "angular_velocity"
+    ],
+    "time_resolution_ms": 1000.0,
+    "duration_s": 100000.0,
+    "scenario_templates": [
+      {
+        "id": "SCN-HST-BRG",
+        "fault": "F-HST-FGS-BEARING",
+        "inject_at_s": 50000,
+        "observables": [
+          "bearing_torque"
+        ]
+      }
+    ]
+  },
+  "rules": [
+    {
+      "rule_id": "R1",
+      "if": "bearing_torque > 0.9*stall",
+      "then": "declare FGS degraded, schedule replacement"
+    },
+    {
+      "rule_id": "R2",
+      "if": "wear_cycles > 1.5e7",
+      "then": "reduce coarse track duty to extend life"
+    }
+  ],
+  "tags": [
+    "真实案例",
+    "Hubble",
+    "FGS",
+    "轴承磨损",
+    "伺服",
+    "在轨维修",
+    "SM1/SM2"
+  ]
+}

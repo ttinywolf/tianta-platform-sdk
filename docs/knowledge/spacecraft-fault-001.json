@@ -1,0 +1,476 @@
+{
+  "schema_version": "1.0",
+  "knowledge_type": "ontology+simulation",
+  "id": "SPACECRAFT-FAULT-001",
+  "title": "航天器在轨故障本体与仿真知识条目",
+  "domain": [
+    "aerospace",
+    "on-orbit",
+    "reliability",
+    "avionics"
+  ],
+  "created": "2026-10-14",
+  "provenance": {
+    "source": [
+      "AnySearch multi-domain retrieval"
+    ],
+    "references": [
+      "NASA GSFC 1994 Orbital Anomaly Report",
+      "NASA 1983 Anomalies of 44 Unmanned Spacecraft",
+      "Space Weather 2003 spacecraft anomalies database",
+      "IEEE AERO 2021 momentum wheel health monitoring",
+      "Envisat Power FDIR 2006",
+      "TRW US6128555A autonomous FDIR patent"
+    ],
+    "confidence": "high"
+  },
+  "ontology": {
+    "namespace": "tianta:aero",
+    "root_class": "SpacecraftComponent",
+    "classes": [
+      {
+        "name": "AttitudeControlSystem",
+        "parent": "SpacecraftComponent",
+        "components": [
+          "ReactionWheel",
+          "MomentumWheel",
+          "StarSensor",
+          "Gyroscope",
+          "Magnetorquer"
+        ]
+      },
+      {
+        "name": "ElectricalPowerSystem",
+        "parent": "SpacecraftComponent",
+        "components": [
+          "SolarArray",
+          "Battery",
+          "PowerController",
+          "Bus"
+        ]
+      },
+      {
+        "name": "ThermalControlSystem",
+        "parent": "SpacecraftComponent",
+        "components": [
+          "Thermistor",
+          "Heater",
+          "Radiator",
+          "OSR"
+        ]
+      },
+      {
+        "name": "TrackingTelemetryCommand",
+        "parent": "SpacecraftComponent",
+        "components": [
+          "Transponder",
+          "Transmitter",
+          "Antenna"
+        ]
+      },
+      {
+        "name": "Payload",
+        "parent": "SpacecraftComponent",
+        "components": [
+          "Instrument"
+        ]
+      },
+      {
+        "name": "CommandAndDataHandling",
+        "parent": "SpacecraftComponent",
+        "components": [
+          "OnboardComputer",
+          "CommandProcessor",
+          "FlightSoftware"
+        ]
+      },
+      {
+        "name": "Propulsion",
+        "parent": "SpacecraftComponent",
+        "components": [
+          "Thruster",
+          "PropellantTank"
+        ]
+      }
+    ],
+    "instances": [
+      {
+        "id": "INST-RW1",
+        "class": "ReactionWheel",
+        "role": "attitude_actuator"
+      },
+      {
+        "id": "INST-BATT1",
+        "class": "Battery",
+        "role": "energy_storage"
+      },
+      {
+        "id": "INST-THERM1",
+        "class": "Thermistor",
+        "role": "thermal_sensor"
+      },
+      {
+        "id": "INST-TX1",
+        "class": "Transmitter",
+        "role": "ttc_downlink"
+      }
+    ],
+    "properties": [
+      {
+        "name": "speed",
+        "domain": "ReactionWheel",
+        "range": "rpm",
+        "observable": true
+      },
+      {
+        "name": "motor_current",
+        "domain": "ReactionWheel",
+        "range": "A",
+        "observable": true
+      },
+      {
+        "name": "bus_voltage",
+        "domain": "ElectricalPowerSystem",
+        "range": "V",
+        "observable": true
+      },
+      {
+        "name": "battery_soc",
+        "domain": "Battery",
+        "range": "percent",
+        "observable": true
+      },
+      {
+        "name": "temperature",
+        "domain": "ThermalControlSystem",
+        "range": "degC",
+        "observable": true
+      },
+      {
+        "name": "solar_array_power",
+        "domain": "SolarArray",
+        "range": "W",
+        "observable": true
+      },
+      {
+        "name": "pointing_error",
+        "domain": "AttitudeControlSystem",
+        "range": "deg",
+        "observable": true
+      },
+      {
+        "name": "link_signal",
+        "domain": "TrackingTelemetryCommand",
+        "range": "dBm",
+        "observable": true
+      }
+    ],
+    "relations": [
+      {
+        "type": "component_of",
+        "sub": "ReactionWheel",
+        "super": "AttitudeControlSystem"
+      },
+      {
+        "type": "causes",
+        "from": "SolarArrayDegradation",
+        "to": "PowerShortfall"
+      },
+      {
+        "type": "predicts",
+        "from": "WheelCurrentDrift",
+        "to": "WheelFailure"
+      },
+      {
+        "type": "mitigated_by",
+        "fault": "WheelFailure",
+        "action": "RedundantWheelSwitch"
+      }
+    ]
+  },
+  "fault_models": [
+    {
+      "fault_id": "F-ACS-WHEEL",
+      "type": "AttitudeControlFailure",
+      "component": "ReactionWheel",
+      "severity": [
+        "critical",
+        "single_point"
+      ],
+      "symptom": {
+        "telemetry": [
+          "wheel_speed_error",
+          "motor_current_anomaly",
+          "pointing_error"
+        ],
+        "description": "转速/电流偏差增大,指向精度下降,三轴失控"
+      },
+      "cause": {
+        "internal": [
+          "bearing_wear",
+          "motor_degradation"
+        ],
+        "environmental": [
+          "thermal_stress"
+        ]
+      },
+      "recovery": [
+        "redundant_wheel_switch",
+        "fault_tolerant_control",
+        "sun_reacquire"
+      ]
+    },
+    {
+      "fault_id": "F-EPS-BATTERY",
+      "type": "PowerFailure",
+      "component": "Battery",
+      "severity": "high",
+      "symptom": {
+        "telemetry": [
+          "bus_voltage",
+          "battery_soc"
+        ],
+        "description": "母线电压异常,电池过充/欠压"
+      },
+      "cause": {
+        "internal": [
+          "controller_fault",
+          "fpga_bitflip"
+        ],
+        "environmental": [
+          "irradiation"
+        ]
+      },
+      "recovery": [
+        "power_fdir",
+        "charging_algorithm",
+        "redundant_controller"
+      ]
+    },
+    {
+      "fault_id": "F-TCS-THERMISTOR",
+      "type": "ThermalControlFailure",
+      "component": "Thermistor",
+      "severity": "medium",
+      "symptom": {
+        "telemetry": [
+          "temperature"
+        ],
+        "description": "温度遥测异常,热控失效"
+      },
+      "cause": {
+        "internal": [
+          "soldering_fault",
+          "element_degradation"
+        ],
+        "environmental": [
+          "thermal_cycling"
+        ]
+      },
+      "recovery": [
+        "fault_tree_analysis",
+        "heater_algorithm",
+        "material_substitution"
+      ]
+    },
+    {
+      "fault_id": "F-TTC-LINK",
+      "type": "CommunicationFailure",
+      "component": "Transmitter",
+      "severity": [
+        "high",
+        "mission_critical"
+      ],
+      "symptom": {
+        "telemetry": [
+          "link_signal",
+          "downlink_lost"
+        ],
+        "description": "遥测中断,指令无响应"
+      },
+      "cause": {
+        "internal": [
+          "transistor_open_short",
+          "connector_open"
+        ],
+        "environmental": [
+          "radiation"
+        ]
+      },
+      "recovery": [
+        "redundant_ttc_switch",
+        "safe_mode_comm",
+        "anomaly_investigation"
+      ]
+    }
+  ],
+  "simulation": {
+    "state_space": {
+      "states": [
+        "nominal",
+        "degraded",
+        "failed"
+      ],
+      "transitions": {
+        "nominal": [
+          "degraded"
+        ],
+        "degraded": [
+          "failed"
+        ]
+      }
+    },
+    "models": [
+      {
+        "model_id": "MOD-WHEEL",
+        "target": "ReactionWheel",
+        "kind": "first_order_kinetics",
+        "state": [
+          "speed"
+        ],
+        "input": [
+          "torque_command"
+        ],
+        "parameters": {
+          "motor_gain_K": 1.0,
+          "time_const_tau_ms": 100.0,
+          "friction_coeff": 0.02
+        },
+        "fault_injection": {
+          "efficiency_degradation": 0.7,
+          "precision_error_rpm": 5.0
+        },
+        "output": [
+          "wheel_speed",
+          "motor_current"
+        ]
+      },
+      {
+        "model_id": "MOD-BATT",
+        "target": "Battery",
+        "kind": "rc_equivalent_circuit",
+        "state": [
+          "soc",
+          "bus_voltage"
+        ],
+        "input": [
+          "charge_current",
+          "load"
+        ],
+        "parameters": {
+          "capacity_Ah": 30.0,
+          "open_circuit_voltage_V": 28.0
+        },
+        "fault_injection": {
+          "capacity_fade_percent": 0.2,
+          "overcharge_threshold_soc": 0.99
+        },
+        "output": [
+          "bus_voltage",
+          "battery_soc"
+        ]
+      },
+      {
+        "model_id": "MOD-THERM",
+        "target": "ThermalControlSystem",
+        "kind": "thermal_lumped",
+        "state": [
+          "temperature"
+        ],
+        "input": [
+          "heat_load",
+          "heater_power"
+        ],
+        "parameters": {
+          "thermal_mass_J_K": 500.0,
+          "radiance_coeff": 0.05
+        },
+        "fault_injection": {
+          "sensor_bias_degC": 10.0,
+          "heater_off": true
+        },
+        "output": [
+          "temperature",
+          "temperature_derivative"
+        ]
+      }
+    ],
+    "sensors": [
+      "wheel_speed",
+      "motor_current",
+      "bus_voltage",
+      "battery_soc",
+      "temperature",
+      "pointing_error",
+      "link_signal"
+    ],
+    "time_resolution_ms": 100.0,
+    "duration_s": 3600.0,
+    "scenario_templates": [
+      {
+        "id": "SCN-WHEEL-DEGRADE",
+        "fault": "F-ACS-WHEEL",
+        "inject_at_s": 600,
+        "observables": [
+          "wheel_speed_error",
+          "motor_current"
+        ]
+      },
+      {
+        "id": "SCN-BATT-OVERCHARGE",
+        "fault": "F-EPS-BATTERY",
+        "inject_at_s": 300,
+        "observables": [
+          "bus_voltage",
+          "battery_soc"
+        ]
+      },
+      {
+        "id": "SCN-THERM-DRIFT",
+        "fault": "F-TCS-THERMISTOR",
+        "inject_at_s": 900,
+        "observables": [
+          "temperature"
+        ]
+      }
+    ]
+  },
+  "rules": [
+    {
+      "rule_id": "R1",
+      "if": "motor_current > nominal*1.5",
+      "then": "degrade wheel to degraded"
+    },
+    {
+      "rule_id": "R2",
+      "if": "battery_soc > 0.99",
+      "then": "trigger overcharge FDIR, reduce charge"
+    },
+    {
+      "rule_id": "R3",
+      "if": "temperature_derivative > threshold",
+      "then": "raise thermal alarm"
+    },
+    {
+      "rule_id": "R4",
+      "if": "pointing_error > 3deg for 5s",
+      "then": "initiate safe mode attitude hold"
+    },
+    {
+      "rule_id": "R5",
+      "if": "link_signal < -160dBm",
+      "then": "switch redundant downlink"
+    }
+  ],
+  "tags": [
+    "卫星故障",
+    "on-orbit anomaly",
+    "FDIR",
+    "本体",
+    "仿真",
+    "姿态控制",
+    "电源",
+    "热控",
+    "测控"
+  ]
+}
